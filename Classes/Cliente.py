@@ -1,4 +1,7 @@
 from datetime import datetime
+import requests
+import json
+
 
 class Cliente:
 
@@ -6,7 +9,7 @@ class Cliente:
         self.id = id
         self.Nome = Nome
         self.CEP = CEP
-        self.idade = idade # sera um ano
+        self.idade = datetime.strptime(idade, '%d/%m/%Y').year
         self.CPF = CPF
         self.sexo = sexo
         self.altura = altura
@@ -16,12 +19,13 @@ class Cliente:
         self.dep = dependentes
         self.imc = None
 
-    def calcular_imc(self, A, P):
-        self.imc = P / (A ** 2)
+    def calcular_imc(self):
+        self.imc = self.peso / (self.altura ** 2)
         return self.imc
 
     def descobri_idade(self):
-        return datetime.now().year - self.idade.year
+        valor = datetime.now().year - self.idade
+        return valor
 
     def idade_sexo(self):
         idade = self.descobri_idade()
@@ -43,3 +47,15 @@ class Cliente:
                 return 70.43
             else:
                 return 85.02
+
+    def buscar_municipio(self):
+        url_api = (f'http://www.viacep.com.br/ws/{self.CEP}/json')
+        req = requests.get(url_api)
+        if req.status_code == 200:
+            dados_json = json.loads(req.text)
+            return dados_json['localidade']
+        else:
+            return 'NaN'
+
+    def calcular_cancer(self):
+        pass
