@@ -1,6 +1,6 @@
 import numpy as np
 import skfuzzy as fuzz
-from Classes.Cliente import Cliente
+from app.Classes.Cliente import Cliente
 
 
 

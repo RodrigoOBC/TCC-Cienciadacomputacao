@@ -1,0 +1,91 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.5">
+    <title>Checkout example · Bootstrap</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/checkout/">
+
+
+    <!-- Bootstrap core CSS -->
+
+    <link rel="Stylesheet" href="{{url_for('static',filename='css/bootstrap.min.css')}}">
+
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+    <!-- Custom styles for this template -->
+
+</head>
+<body class="bg-light">
+<div class="container">
+    <div class="py-5 text-center">
+        <img class="d-block mx-auto mb-4" src="../imagem/SeguroVida.jpg" alt="">
+        <h2>SAR JC "Titulo"</h2>
+        <p class="lead">Resumo breve do projeto</div>
+
+
+    <form class="card p-2">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Promo code">
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-secondary">Redeem</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="col-md-8 order-md-1">
+    <h4 class="mb-3">Informações pessoais</h4>
+    <form class="needs-validation" novalidate>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ media }}
+                <label for="primeira">Nome Completo</label>
+                <input type="text" class="form-control" name="Nome_input" placeholder="" value="" required>
+
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="segunda"> CEP </label>
+                <input type="text" class="form-control" name="CEP_input" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                    Valid last name is required.
+                </div>
+            </div>
+        </div>
+
+        <hr class="mb-4">
+        <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+    </form>
+</div>
+</div>
+
+<footer class="my-5 pt-5 text-muted text-center text-small">
+    <p class="mb-1">&copy; 2017-2019 Company Name</p>
+    <ul class="list-inline">
+        <li class="list-inline-item"><a href="#">Privacy</a></li>
+        <li class="list-inline-item"><a href="#">Terms</a></li>
+        <li class="list-inline-item"><a href="#">Support</a></li>
+    </ul>
+</footer>
+</div>
+
+
+</body>
+</html>
