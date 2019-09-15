@@ -3,9 +3,13 @@ import requests
 import json
 
 
+# from app.models.Fuzzy_exemplo import calculos
+
+
 class Cliente:
 
-    def __init__(self, id, Nome, CEP, idade, CPF, sexo, altura, peso, doenca_cronica, salarioM, dependentes):
+    def __init__(self, id, Nome, CEP, idade, CPF, sexo, altura, peso, doenca_cronica, salarioM, dependentes,
+                 exercicios):
         self.id = id
         self.Nome = Nome
         self.CEP = CEP
@@ -18,6 +22,7 @@ class Cliente:
         self.salarioM = salarioM
         self.dep = dependentes
         self.imc = None
+        self.execicios = exercicios
 
     def calcular_imc(self):
         self.imc = self.peso / (self.altura ** 2)
@@ -48,6 +53,11 @@ class Cliente:
             else:
                 return 85.02
 
+    def calcular_exercicios(self):
+        result = (self.execicios * 300) / 7
+        return result
+
+
     def buscar_municipio(self):
         url_api = (f'http://www.viacep.com.br/ws/{self.CEP}/json')
         req = requests.get(url_api)
@@ -57,8 +67,10 @@ class Cliente:
         else:
             return 'NaN'
 
-    def calcular_cancer(self):
-        pass
+    # def segmentar_cliente(self):
+    #     grupo_de_risco, taxa_de_risco = calculos(exercicio=self.calcular_exercicios(), taxa_morte_municipio=, cancer_risco=20,
+    #              idade=self.descobri_idade(), imc=self.calcular_imc(), idade_sexo=self.idade_sexo())
+    #     pass
 
 
 if __name__ == '__main__':
