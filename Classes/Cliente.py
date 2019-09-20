@@ -8,8 +8,8 @@ import json
 
 class Cliente:
 
-    def __init__(self, id, Nome, CEP, idade, CPF, sexo, altura, peso, doenca_cronica, salarioM, dependentes,
-                 exercicios):
+    def __init__(self, id=None, Nome=None, CEP=None, idade=None, CPF=None, sexo=None, altura=None, peso=None,
+                 doenca_cronica=None, salarioM=None, dependentes=None, exercicios=None):
         self.id = id
         self.Nome = Nome
         self.CEP = CEP
@@ -57,9 +57,10 @@ class Cliente:
         result = (self.execicios * 300) / 7
         return result
 
-
     def buscar_municipio(self):
-        url_api = (f'http://www.viacep.com.br/ws/{self.CEP}/json')
+        cep = self.CEP
+        cep = cep.replace('.', '')
+        url_api = (f'http://www.viacep.com.br/ws/{cep.replace("-", "")}/json')
         req = requests.get(url_api)
         if req.status_code == 200:
             dados_json = json.loads(req.text)
