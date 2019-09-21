@@ -1,6 +1,6 @@
 import psycopg2
 from postgres import Postgres
-
+from datetime import datetime
 
 class Conectar:
     def __init__(self, host, DB, user, password):
@@ -54,5 +54,15 @@ class Conectar:
             return False
 
 
+class Interar_BD:
+    def __init__(self, CPF):
+        self.CPF = CPF
+        self.id_sessao = None
+        self.data_hora = datetime.now()
+        self.BD = Conectar(host='localhost', DB='tcc', user='postgres', password='Meteoro585')
+
+    def buscar_Valores(self):
+        valor = self.BD.select(f"select * from cliente AS c where c.cpf ={self.CPF} ")
+        return valor
 if __name__ == '__main__':
     pass

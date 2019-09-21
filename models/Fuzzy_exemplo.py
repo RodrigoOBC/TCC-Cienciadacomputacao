@@ -1,6 +1,6 @@
 import numpy as np
 import skfuzzy as fuzz
-from app.Classes.Cliente import Cliente
+from Classes.Cliente import Cliente
 
 
 def calculos(exercicio, taxa_morte_municipio, cancer_risco, idade, imc, sexo=None, idade_sexo=None) -> tuple:
@@ -61,8 +61,8 @@ def calculos(exercicio, taxa_morte_municipio, cancer_risco, idade, imc, sexo=Non
     # saida
 
     perigo_baixo_x = fuzz.trimf(x_saida, [0, 5, 10])
-    perigo_medio_x = fuzz.trimf(x_saida, [9, 20, 40])
-    perigo_alto_x = fuzz.trimf(x_saida, [50, 70, 80])
+    perigo_medio_x = fuzz.trimf(x_saida, [10, 20, 49])
+    perigo_alto_x = fuzz.trimf(x_saida, [49, 70, 80])
     perigo_de_risco_x = fuzz.trimf(x_saida, [80, 90, 100])
 
     # Definindo os leveis de cada perigo
@@ -117,49 +117,45 @@ def calculos(exercicio, taxa_morte_municipio, cancer_risco, idade, imc, sexo=Non
     4- Risco baixo
     
     '''
-    baixo_risco = np.fmin(
-        x1=np.fmin(x1=np.fmax(exercicio_level_alto,
-                              np.fmax(imc_level_baixo,
-                                      np.fmax(taxa_morte_municipio_level_muito_baixo_, taxa_IS_baixo))),
-                   x2=perigo_baixo_x),
-        x2=np.fmin(
-            np.fmax(exercicio_level_alto,
-                    np.fmax(imc_level_medio, np.fmax(taxa_morte_municipio_level_muito_baixo_, idade_sexo_baixo))),
-            np.fmin(np.fmax(exercicio_level_alto,
-                            np.fmax(imc_level_baixo, np.fmax(taxa_morte_municipio_level_baixo, idade_sexo_baixo))),
+    risco_baixo = np.fmax(perigo_baixo_x, np.fmax(exercicio_level_alto,
+                                                  np.fmax(np.fmin(imc_level_baixo, imc_level_medio), np.fmax(
+                                                      np.fmin(taxa_morte_municipio_level_muito_baixo_,
+                                                              taxa_morte_municipio_level_baixo),
+                                                      np.fmin(taxa_IS_baixo, taxa_IS_medio))))
+                          )
 
-                    np.fmin(np.fmax(exercicio_level_alto, np.fmax(imc_level_baixo,
-                                                                  np.fmax(taxa_morte_municipio_level_muito_baixo_,
-                                                                          idade_sexo_medio))),
-                            np.fmax(exercicio_level_normal, np.fmax(imc_level_baixo,
-                                                                    np.fmax(taxa_morte_municipio_level_muito_baixo_,
-                                                                            idade_sexo_baixo))
+    risco_medio = np.fmin(perigo_medio_x, np.fmax(
+        np.fmax(np.fmin(exercicio_level_baixo, np.fmin(exercicio_level_normal, exercicio_level_alto)),
+                np.fmin(imc_level_alto, np.fmin(imc_level_medio, imc_level_baixo))),
+        np.fmax(np.fmin(taxa_IS_baixo, np.fmin(taxa_IS_medio, taxa_IS_alto)),
+                np.fmin(taxa_cancer_baixo, taxa_IS_medio))))
 
-                                    ))
+    risco_alto = np.fmin(perigo_alto_x, np.fmax(
+        np.fmax(np.fmin(exercicio_level_baixo, np.fmin(exercicio_level_normal, exercicio_level_alto)),
+                np.fmin(imc_level_alto, np.fmin(imc_level_medio, imc_level_muito_alto))),
+        np.fmax(np.fmin(np.fmin(taxa_IS_medio, imc_level_muito_alto), np.fmin(taxa_IS_baixo, taxa_IS_alto)),
+                np.fmin(np.fmin(taxa_morte_municipio_level_baixo, taxa_morte_municipio_level_normal),
+                        np.fmin(taxa_morte_municipio_level_alto, taxa_morte_municipio_level_MA)))))
 
-                    )))
+    negado = np.fmin(np.fmax(np.fmin(exercicio_level_baixo, taxa_IS_MA), np.fmin(taxa_cancer_MA, imc_level_negado)),
+                     perigo_de_risco_x)
 
-    # função a ser implementada aggregated = np.fmax(perigo_baixo, np.fmax(perigo_alto, perigo_altissimo))
-    # result = fuzz.defuzzify.dcentroid(x_saida, aggregated, 5)
-    # result será o retorno
-    return ('calculo_valores(result)', 0)
+    '''  perigo ou (((EA ou EM) ou EB) ou ((imcb ou imvm)ou imca)  ou                          '''
+    aggregated = np.fmax(np.fmax(risco_baixo, negado), np.fmax(risco_medio, risco_alto))
+    result = fuzz.defuzzify.dcentroid(x_saida, aggregated, 10)
+    return (calculo_valores(result), result)
 
 
 def calculo_valores(porcento) -> str:
     if porcento <= 10:
         return 'B'
-    elif 10.01 < porcento <= 50:
+    elif 10 < porcento <= 49:
         return 'M'
-    elif 50.1 < porcento < 80:
+    elif 50 <= porcento < 80:
         return 'A'
-    elif porcento > 80:
+    elif porcento >= 80:
         return 'Negado'
 
 
 if __name__ == '__main__':
-    C1 = Cliente(id=1, Nome='Rodrigo', CEP=25515530, idade=23, CPF=123, sexo='F', altura=1.75,
-                 peso=75, doenca_cronica=True, salarioM=1200, dependentes=True)
-    idade = C1.idade
-    sexo = C1.sexo
-    imc = C1.calcular_imc()
-    idade_S = C1.idade_sexo()
+    pass

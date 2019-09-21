@@ -9,16 +9,15 @@ import json
 class Cliente:
 
     def __init__(self, id=None, Nome=None, CEP=None, idade=None, CPF=None, sexo=None, altura=None, peso=None,
-                 doenca_cronica=None, salarioM=None, dependentes=None, exercicios=None):
+                 salarioM=None, dependentes=None, exercicios=None):
         self.id = id
         self.Nome = Nome
         self.CEP = CEP
-        self.idade = datetime.strptime(idade, '%d/%m/%Y').year
+        self.idade = idade
         self.CPF = CPF
         self.sexo = sexo
         self.altura = altura
         self.peso = peso
-        self.DC = doenca_cronica
         self.salarioM = salarioM
         self.dep = dependentes
         self.imc = None
@@ -26,7 +25,7 @@ class Cliente:
 
     def calcular_imc(self):
         self.imc = self.peso / (self.altura ** 2)
-        return self.imc
+        return round(self.imc, 2)
 
     def descobri_idade(self):
         valor = datetime.now().year - self.idade
@@ -68,11 +67,14 @@ class Cliente:
         else:
             return 'NaN'
 
-    # def segmentar_cliente(self):
-    #     grupo_de_risco, taxa_de_risco = calculos(exercicio=self.calcular_exercicios(), taxa_morte_municipio=, cancer_risco=20,
-    #              idade=self.descobri_idade(), imc=self.calcular_imc(), idade_sexo=self.idade_sexo())
-    #     pass
+    def arrumar_data(self):
+        data = self.idade.split('/')
+        data[0], data[1], data[2] = data[2], data[1], data[0]
+        self.idade = '/'.join(data)
 
 
 if __name__ == '__main__':
-    pass
+    data = '28/12/1996'.split('/')
+    data[0], data[1], data[2] = data[2], data[1], data[0]
+    idade = '/'.join(data)
+    print(Cliente(idade=idade).descobri_idade())
