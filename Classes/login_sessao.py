@@ -20,7 +20,7 @@ class Sessao:
 
     def registrar_saida(self):
         data = datetime.now()
-        self.BD.insert(query=f"insert into Sessao values ('{self.id_sessao}','{self.CPF}','{data}','S')")
+        self.BD.insert(query=f"insert into Sessao values ('{self.id_sessao}','{self.CPF}','{str(self.data_hora)}','S')")
 
     def logar(self, usuario, senha):
         Entrada = self.BD.login_buscar(usuario=usuario, senha=senha)
@@ -30,13 +30,23 @@ class Sessao:
             return False
 
     def buscar_sessao(self):
+        '''
+         A função busca no Banco de dados Sessão se a sessão criada é existente, sendo existente ela pede uma nova geração de sessão
+        :return: True para existente , false para inexistente
+        '''
         valor = self.BD.select(
             query=f"select  Case When sessao.id_sessao = ({self.id_sessao})  then 'TRUE' Else 'False' End AS COND From sessao;")
-        if valor[0] == 'TRUE':
+        if not valor:
+            return False
+        elif valor[0] == 'TRUE':
             return True
         else:
             return False
 
+    def buscar_stauts(self):
+        print(self.CPF)
+        resulta = self.BD.select(f"SELECT L.permicao FROM Login_user as L where L.cpf in ('{self.CPF}');")
+        return resulta[0]
 
 if __name__ == '__main__':
     pass

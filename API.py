@@ -1,12 +1,18 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+import json
+
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+import requests
 from numpy import random as rd
+from flask_json import FlaskJSON, JsonError, json_response, as_json
 import os
 from Classes.Cliente import Cliente as cl
 from Classes.login_sessao import Sessao as se
 from Classes.Banco_de_Dados import Conectar as co
+from Classes.Banco_de_Dados import Interar_BD as ibd
 
 app1 = Flask(__name__)
 app1.secret_key = os.urandom(24)
+FlaskJSON(app1)
 global S1
 global cliente1
 S1 = se()
@@ -38,23 +44,23 @@ def Login():
 
 @app1.route('/home', methods=['GET', "POST"])
 def Home():
-    resultado = None
-    media = None
     Nome = None
     CEP = None
     erro_home = 'ola'
     if 'user' in session:
         if request.method == 'POST':
             resultado_form = request.form.to_dict()
-            cliente1 = cl(Nome=resultado_form['Nome_input'], CEP=resultado_form['CEP_input'], idade='28/12/1996')
-            if (cliente1.Nome != '' and cliente1.CEP != '') and (
-                    cliente1.Nome is not None and cliente1.CEP is not None):
-                return redirect(url_for('logar'))
+            Nome = resultado_form['Nome_input']
+            CEP = resultado_form['CEP_input']
+            CPF = resultado_form['CPF_input']
+            if (Nome != '' and CEP != '') and (
+                    Nome is not None and CEP is not None):
+                return redirect(url_for('resultado'))
             else:
                 erro_home = 'Todos os Campos são obrigatorios'
                 return render_template('Home.html', erro=erro_home)
         else:
-            return render_template('Home.html', usuario=session['user'])
+            return render_template('Home.html', usuario=S1.buscar_stauts(), teste=session['user'])
     return redirect(url_for('Login'))
 
 
@@ -71,6 +77,12 @@ def sign_out():
         session.pop('user')
         S1.registrar_saida()
         return redirect(url_for('Login'))
+
+
+@app1.route('/resultado', methods=['GET', "POST"])
+def resultado():
+    resultado = 2
+    return render_template('resultado.html', resultado=resultado)
 
 
 if __name__ == '__main__':

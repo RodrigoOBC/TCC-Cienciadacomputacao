@@ -22,10 +22,9 @@ class Conectar:
         try:
             self.Conectar()
             valores = self.con.all(query)
+            return valores
         except:
             return False
-        finally:
-            return valores
 
     def update(self, query) -> bool:
         try:
