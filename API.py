@@ -82,7 +82,7 @@ def sign_out():
 @app1.route('/resultado', methods=['GET', "POST"])
 def resultado():
     resultado = 2
-    return render_template('resultado.html', resultado=resultado)
+    return render_template('resultado.html', resultado=resultado, usuario=S1.buscar_stauts())
 
 
 if __name__ == '__main__':
