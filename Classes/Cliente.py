@@ -3,25 +3,29 @@ import requests
 import json
 
 
+# from app.models.Fuzzy_exemplo import calculos
+
+
 class Cliente:
 
-    def __init__(self, id, Nome, CEP, idade, CPF, sexo, altura, peso, doenca_cronica, salarioM, dependentes):
+    def __init__(self, id=None, Nome=None, CEP=None, idade=None, CPF=None, sexo=None, altura=None, peso=None,
+                 salarioM=None, dependentes=None, exercicios=None):
         self.id = id
         self.Nome = Nome
         self.CEP = CEP
-        self.idade = datetime.strptime(idade, '%d/%m/%Y').year
+        self.idade = idade
         self.CPF = CPF
         self.sexo = sexo
         self.altura = altura
         self.peso = peso
-        self.DC = doenca_cronica
         self.salarioM = salarioM
         self.dep = dependentes
         self.imc = None
+        self.execicios = exercicios
 
     def calcular_imc(self):
         self.imc = self.peso / (self.altura ** 2)
-        return self.imc
+        return round(self.imc, 2)
 
     def descobri_idade(self):
         valor = datetime.now().year - self.idade
@@ -48,8 +52,14 @@ class Cliente:
             else:
                 return 85.02
 
+    def calcular_exercicios(self):
+        result = (self.execicios * 300) / 7
+        return result
+
     def buscar_municipio(self):
-        url_api = (f'http://www.viacep.com.br/ws/{self.CEP}/json')
+        cep = self.CEP
+        cep = cep.replace('.', '')
+        url_api = (f'http://www.viacep.com.br/ws/{cep.replace("-", "")}/json')
         req = requests.get(url_api)
         if req.status_code == 200:
             dados_json = json.loads(req.text)
@@ -57,6 +67,14 @@ class Cliente:
         else:
             return 'NaN'
 
-    def calcular_cancer(self):
+    def arrumar_data(self):
+        data = self.idade.split('/')
+        data[0], data[1], data[2] = data[2], data[1], data[0]
+        self.idade = '/'.join(data)
 
-        pass
+
+if __name__ == '__main__':
+    data = '28/12/1996'.split('/')
+    data[0], data[1], data[2] = data[2], data[1], data[0]
+    idade = '/'.join(data)
+    print(Cliente(idade=idade).descobri_idade())
