@@ -63,5 +63,7 @@ class Interar_BD:
     def buscar_Valores(self):
         valor = self.BD.select(f"select * from cliente AS c where c.cpf ={self.CPF} ")
         return valor
+
+        
 if __name__ == '__main__':
     pass
