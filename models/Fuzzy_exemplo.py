@@ -132,9 +132,9 @@ class Calculos:
 
         risco_medio = np.fmin(perigo_medio_x, np.fmax(
             np.fmax(np.fmin(exercicio_level_baixo, np.fmin(exercicio_level_normal, exercicio_level_alto)),
-                    np.fmin(imc_level_alto, np.fmin(imc_level_medio, imc_level_baixo))),
+                    np.fmin(imc_level_medio, imc_level_baixo)),
             np.fmax(np.fmin(taxa_IS_baixo, np.fmin(taxa_IS_medio, taxa_IS_alto)),
-                    np.fmin(taxa_cancer_baixo, taxa_IS_medio))))
+                    taxa_cancer_baixo)))
 
         risco_alto = np.fmin(perigo_alto_x, np.fmax(
             np.fmax(np.fmin(exercicio_level_baixo, np.fmin(exercicio_level_normal, exercicio_level_alto)),
@@ -148,15 +148,16 @@ class Calculos:
 
         '''  perigo ou (((EA ou EM) ou EB) ou ((imcb ou imvm)ou imca)  ou                          '''
         aggregated = np.fmax(np.fmax(risco_baixo, negado), np.fmax(risco_medio, risco_alto))
-        result = fuzz.defuzzify.dcentroid(x_saida, aggregated, 10)
+        # result = fuzz.defuzzify.dcentroid(x_saida, aggregated, 64)
+        result = fuzz.defuzzify.centroid(x_saida, aggregated)
         return (self.calculo_valores(result), result)
 
     def calculo_valores(self, porcento) -> str:
         if porcento <= 10:
             return 'B'
-        elif 10 < porcento <= 49:
+        elif 10 < porcento <= 50:
             return 'M'
-        elif 50 <= porcento < 80:
+        elif 51 <= porcento < 80:
             return 'A'
         elif porcento >= 80:
             return 'Negado'
@@ -168,8 +169,21 @@ class Calculos:
         Despesa_base = (Despesa_base * 60 * 12)
         return (valor_requerido, Despesa_base)
 
-
+    def realizar_calculos(self):
+        nivel_risco, taxa_risco = self.calculos(exercicio=self.Cl.execicios,
+                                                taxa_morte_municipio=np.random.random_integers(1, 300),
+                                                cancer_risco=np.random.random_integers(1, 50),
+                                                idade=self.Cl.descobri_idade(), imc=self.Cl.calcular_imc(),
+                                                sexo=self.Cl.sexo,
+                                                idade_sexo=self.Cl.idade_sexo())
+        return round(taxa_risco, 2)
 
 
 if __name__ == '__main__':
-    pass
+    letra, result = Calculos(1, 2).calculos(exercicio=60,
+                                            taxa_morte_municipio=15,
+                                            cancer_risco=20,
+                                            idade=20,
+                                            imc=10, sexo='M',
+                                            idade_sexo=25)
+    print(result)

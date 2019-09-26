@@ -2,6 +2,7 @@ import psycopg2
 from postgres import Postgres
 from datetime import datetime
 
+
 class Conectar:
     def __init__(self, host, DB, user, password):
         self.host = host
@@ -63,5 +64,17 @@ class Interar_BD:
     def buscar_Valores(self):
         valor = self.BD.select(f"select * from cliente AS c where c.cpf ={self.CPF} ")
         return valor
+
+    def inserir_banco_classe(self, Cliente):
+        try:
+            self.BD.insert(
+                f"insert into Cliente values (DEFAULT,'{Cliente.Nome}','{Cliente.CEP}',"
+                f"'{Cliente.CPF}','{Cliente.idade}','{Cliente.sexo}',{Cliente.altura},{Cliente.peso},"
+                f"{Cliente.salarioM},{Cliente.dep}, {Cliente.execicios}, 0.0, {Cliente.risco});")
+            return True
+        except:
+            return False
+
+
 if __name__ == '__main__':
     pass

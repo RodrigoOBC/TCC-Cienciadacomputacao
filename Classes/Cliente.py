@@ -8,9 +8,9 @@ import json
 
 class Cliente:
 
-    def __init__(self, id=None, Nome=None, CEP=None, idade=None, CPF=None, sexo=None, altura=None, peso=None,
-                 salarioM=None, dependentes=None, exercicios=None):
-        self.id = id
+    def __init__(self, Nome=None, CEP=None, idade=None, CPF=None, sexo=None, altura=None, peso=None,
+                 salarioM=None, dependentes=None, exercicios=None, risco=None):
+        self.id = 0
         self.Nome = Nome
         self.CEP = CEP
         self.idade = idade
@@ -22,13 +22,16 @@ class Cliente:
         self.dep = dependentes
         self.imc = None
         self.execicios = exercicios
+        self.risco = risco
 
     def calcular_imc(self):
         self.imc = self.peso / (self.altura ** 2)
         return round(self.imc, 2)
 
     def descobri_idade(self):
-        valor = datetime.now().year - self.idade
+        ano_certo = self.arrumar_data()
+        data = datetime.strptime(ano_certo, '%Y/%m/%d')
+        valor = datetime.now().year - data.year
         return valor
 
     def idade_sexo(self):
@@ -70,11 +73,9 @@ class Cliente:
     def arrumar_data(self):
         data = self.idade.split('/')
         data[0], data[1], data[2] = data[2], data[1], data[0]
-        self.idade = '/'.join(data)
+        return '/'.join(data)
+
 
 
 if __name__ == '__main__':
-    data = '28/12/1996'.split('/')
-    data[0], data[1], data[2] = data[2], data[1], data[0]
-    idade = '/'.join(data)
-    print(Cliente(idade=idade).descobri_idade())
+    pass

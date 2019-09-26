@@ -9,13 +9,18 @@ from Classes.Cliente import Cliente as cl
 from Classes.login_sessao import Sessao as se
 from Classes.Banco_de_Dados import Conectar as co
 from Classes.Banco_de_Dados import Interar_BD as ibd
+from models.Fuzzy_exemplo import Calculos
 
+
+class api:
+    def __init__(self):
+        self.S1 = se()
+        self.cl1 = None
+
+
+api = api()
 app1 = Flask(__name__)
 app1.secret_key = os.urandom(24)
-FlaskJSON(app1)
-global S1
-global cliente1
-S1 = se()
 
 
 @app1.route('/login', methods=['GET', "POST"])
@@ -25,17 +30,17 @@ def Login():
         rep = True
         resultado_form = request.form.to_dict()
         usuario, passw = resultado_form['CPF_NAME'], resultado_form['login']
-        if S1.logar(usuario, passw):
+        if api.S1.logar(usuario, passw):
             session['user'] = usuario
-            S1.CPF = usuario
-            S1.id_sessao = rd.random_integers(1, 100000)
+            api.S1.CPF = usuario
+            api.S1.id_sessao = rd.random_integers(1, 100000)
             while (rep == True):
-                if S1.buscar_sessao():
-                    S1.id_sessao = rd.random_integers(1, 10000000)
+                if api.S1.buscar_sessao():
+                    api.S1.id_sessao = rd.random_integers(1, 10000000)
                     rep = True
                 else:
                     rep = False
-            S1.acao = True
+            api.S1.acao = True
             return redirect(url_for('logar'))
         else:
             return render_template("login.html", erro=False)
@@ -53,21 +58,26 @@ def Home():
             Nome = resultado_form['Nome_input']
             CEP = resultado_form['CEP_input']
             CPF = resultado_form['CPF_input']
-            if (Nome != '' and CEP != '') and (
-                    Nome is not None and CEP is not None):
-                return redirect(url_for('resultado'))
-            else:
-                erro_home = 'Todos os Campos são obrigatorios'
-                return render_template('Home.html', erro=erro_home)
+            Idade = resultado_form['Idade_input']
+            Sexo = resultado_form['Sexo_input']
+            Peso = int(resultado_form['Peso_input'])
+            Altura = float(resultado_form['Altura_input'])
+            Salario = int(resultado_form['Salario_input'])
+            Exercicio = int(resultado_form['Exercicio_input'])
+
+            api.cl1 = cl(Nome=Nome, CEP=CEP, idade=Idade, CPF=CPF, sexo=Sexo, altura=Altura, peso=Peso,
+                         salarioM=Salario, dependentes=True, exercicios=Exercicio, risco=None)
+
+            return redirect(url_for('resultado'))
         else:
-            return render_template('Home.html', usuario=S1.buscar_stauts(), teste=session['user'])
+            return render_template('Home.html', usuario=api.S1.buscar_stauts(), teste=session['user'])
     return redirect(url_for('Login'))
 
 
 @app1.route('/logando', methods=['GET', "POST"])
 def logar():
     if 'user' in session:
-        S1.registrar_entrada()
+        api.S1.registrar_entrada()
         return redirect(url_for('Home'))
 
 
@@ -75,14 +85,18 @@ def logar():
 def sign_out():
     if 'user' in session:
         session.pop('user')
-        S1.registrar_saida()
+        api.S1.registrar_saida()
         return redirect(url_for('Login'))
 
 
 @app1.route('/resultado', methods=['GET', "POST"])
 def resultado():
     resultado = 2
-    return render_template('resultado.html', resultado=resultado, usuario=S1.buscar_stauts())
+    ca = Calculos(api.cl1, 1200)
+    risco = ca.realizar_calculos()
+    cl.risco = risco
+    ibd(api.cl1.CPF).inserir_banco_classe(api.cl1)
+    return render_template('resultado.html', resultado=risco, usuario=api.S1.buscar_stauts())
 
 
 if __name__ == '__main__':
