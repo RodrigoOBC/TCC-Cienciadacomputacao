@@ -1,6 +1,7 @@
 from datetime import datetime
 import requests
 import json
+from .Banco_de_Dados import Conectar
 
 
 # from app.models.Fuzzy_exemplo import calculos
@@ -62,11 +63,14 @@ class Cliente:
     def buscar_municipio(self):
         cep = self.CEP
         cep = cep.replace('.', '')
-        url_api = (f'http://www.viacep.com.br/ws/{cep.replace("-", "")}/json')
+        url_api = f'http://www.viacep.com.br/ws/{cep.replace("-", "")}/json'
         req = requests.get(url_api)
         if req.status_code == 200:
             dados_json = json.loads(req.text)
-            return dados_json['localidade']
+            return (dados_json['ibge'],
+                    dados_json['localidade'],
+                    dados_json['Centro'],
+                    dados_json['logradouro'])
         else:
             return 'NaN'
 
@@ -75,6 +79,14 @@ class Cliente:
         data[0], data[1], data[2] = data[2], data[1], data[0]
         return '/'.join(data)
 
+    def buscar_valor_morte(self):
+        cod_municipio, municipio, bairro, rua = self.buscar_municipio()
+        BD = Conectar(host='localhost', DB='tcc', user='postgres', password='Meteoro585')
+        lista_com_val = BD.select(f'select MD.MORTE from Municipio_dados as MD WHERE MD.cod = {cod_municipio};')
+        if lista_com_val:
+            return lista_com_val[0], municipio, bairro, rua
+        else:
+            return 'fudeu'
 
 
 if __name__ == '__main__':

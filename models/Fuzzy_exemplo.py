@@ -21,55 +21,55 @@ class Calculos:
 
         if 18 <= idade <= 64:
             exercicio_baixo = fuzz.trimf(x_exercicios, [0, 20, 30])
-            exercicio_normal = fuzz.trimf(x_exercicios, [28, 50, 60])
-            exercicio_alto = fuzz.trimf(x_exercicios, [58, 60, 300])
+            exercicio_normal = fuzz.trimf(x_exercicios, [21, 50, 60])
+            exercicio_alto = fuzz.trimf(x_exercicios, [51, 60, 300])
         elif idade < 18:
             exercicio_baixo = fuzz.trimf(x_exercicios, [0, 50, 75])
-            exercicio_normal = fuzz.trimf(x_exercicios, [75, 150, 214])
-            exercicio_alto = fuzz.trimf(x_exercicios, [149, 235, 300])
+            exercicio_normal = fuzz.trimf(x_exercicios, [51, 150, 214])
+            exercicio_alto = fuzz.trimf(x_exercicios, [151, 235, 300])
 
-        # municipio risco
+            # municipio risco
 
         taxa_morte_municipio_baixissimo = fuzz.trimf(x_taxa_morte_municipio, [0, 10, 20])
-        taxa_morte_municipio_baixo = fuzz.trimf(x_taxa_morte_municipio, [20, 30, 40])
-        taxa_morte_municipio_normal = fuzz.trimf(x_taxa_morte_municipio, [40, 50, 60])
-        taxa_morte_municipio_alto = fuzz.trimf(x_taxa_morte_municipio, [60, 70, 80])
-        taxa_morte_municipio_altissimo = fuzz.trimf(x_taxa_morte_municipio, [80, 100, 200])
+        taxa_morte_municipio_baixo = fuzz.trimf(x_taxa_morte_municipio, [11, 30, 40])
+        taxa_morte_municipio_normal = fuzz.trimf(x_taxa_morte_municipio, [31, 50, 60])
+        taxa_morte_municipio_alto = fuzz.trimf(x_taxa_morte_municipio, [51, 70, 80])
+        taxa_morte_municipio_altissimo = fuzz.trimf(x_taxa_morte_municipio, [71, 100, 200])
 
         # IMC
         if sexo == 'M':
             imc_baixo = fuzz.trimf(x_imc, [0, 10, 20])
-            imc_medio = fuzz.trimf(x_imc, [19, 20, 24])
-            imc_O_leve = fuzz.trimf(x_imc, [23, 26, 29])
-            imc_O_moderada = fuzz.trimf(x_imc, [28, 35, 39])
-            imc_O_Morbida = fuzz.trimf(x_imc, [38, 45, 50])
+            imc_medio = fuzz.trimf(x_imc, [11, 20, 24])
+            imc_O_leve = fuzz.trimf(x_imc, [21, 26, 29])
+            imc_O_moderada = fuzz.trimf(x_imc, [27, 35, 39])
+            imc_O_Morbida = fuzz.trimf(x_imc, [36, 45, 50])
         elif sexo == 'F':
             imc_baixo = fuzz.trimf(x_imc, [0, 5, 19])
-            imc_medio = fuzz.trimf(x_imc, [19, 20, 24])
-            imc_O_leve = fuzz.trimf(x_imc, [23, 26, 29])
-            imc_O_moderada = fuzz.trimf(x_imc, [28, 35, 39])
-            imc_O_Morbida = fuzz.trimf(x_imc, [38, 45, 50])
+            imc_medio = fuzz.trimf(x_imc, [6, 20, 24])
+            imc_O_leve = fuzz.trimf(x_imc, [21, 26, 29])
+            imc_O_moderada = fuzz.trimf(x_imc, [27, 35, 39])
+            imc_O_Morbida = fuzz.trimf(x_imc, [36, 45, 50])
 
         # Diabetes
 
         cancer_baixo = fuzz.trimf(x_cancer_risco, [0, 10, 30])
-        cancer_medio = fuzz.trimf(x_cancer_risco, [28, 40, 50])
-        cancer_alto = fuzz.trimf(x_cancer_risco, [48, 60, 70])
-        cancer_altissimo = fuzz.trimf(x_cancer_risco, [68, 80, 100])
+        cancer_medio = fuzz.trimf(x_cancer_risco, [10, 40, 50])
+        cancer_alto = fuzz.trimf(x_cancer_risco, [45, 60, 70])
+        cancer_altissimo = fuzz.trimf(x_cancer_risco, [65, 80, 100])
 
         # idade sexo
 
         idade_sexo_baixo = fuzz.trimf(x_idade_sexo, [0, 10, 30])
-        idade_sexo_medio = fuzz.trimf(x_idade_sexo, [28, 40, 50])
-        idade_sexo_alto = fuzz.trimf(x_idade_sexo, [48, 60, 70])
-        idade_sexo_altissimo = fuzz.trimf(x_idade_sexo, [68, 80, 100])
+        idade_sexo_medio = fuzz.trimf(x_idade_sexo, [11, 40, 50])
+        idade_sexo_alto = fuzz.trimf(x_idade_sexo, [41, 60, 70])
+        idade_sexo_altissimo = fuzz.trimf(x_idade_sexo, [61, 80, 100])
 
         # saida
 
         perigo_baixo_x = fuzz.trimf(x_saida, [0, 5, 10])
-        perigo_medio_x = fuzz.trimf(x_saida, [10, 20, 49])
-        perigo_alto_x = fuzz.trimf(x_saida, [49, 70, 80])
-        perigo_de_risco_x = fuzz.trimf(x_saida, [80, 90, 100])
+        perigo_medio_x = fuzz.trimf(x_saida, [6, 20, 49])
+        perigo_alto_x = fuzz.trimf(x_saida, [21, 70, 80])
+        perigo_de_risco_x = fuzz.trimf(x_saida, [71, 90, 100])
 
         # Definindo os leveis de cada perigo
         exercicio_level_baixo = fuzz.interp_membership(x_exercicios, exercicio_baixo, exercicio)
@@ -148,8 +148,9 @@ class Calculos:
 
         '''  perigo ou (((EA ou EM) ou EB) ou ((imcb ou imvm)ou imca)  ou                          '''
         aggregated = np.fmax(np.fmax(risco_baixo, negado), np.fmax(risco_medio, risco_alto))
-        # result = fuzz.defuzzify.dcentroid(x_saida, aggregated, 64)
-        result = fuzz.defuzzify.centroid(x_saida, aggregated)
+        print(aggregated)
+        result = fuzz.defuzzify.dcentroid(x_saida, aggregated, 64)
+        # result = fuzz.defuzzify.centroid(x_saida, aggregated)
         return (self.calculo_valores(result), result)
 
     def calculo_valores(self, porcento) -> str:
@@ -171,19 +172,13 @@ class Calculos:
 
     def realizar_calculos(self):
         nivel_risco, taxa_risco = self.calculos(exercicio=self.Cl.execicios,
-                                                taxa_morte_municipio=np.random.random_integers(1, 300),
+                                                taxa_morte_municipio=self.Cl.buscar_valor_morte(),
                                                 cancer_risco=np.random.random_integers(1, 50),
                                                 idade=self.Cl.descobri_idade(), imc=self.Cl.calcular_imc(),
                                                 sexo=self.Cl.sexo,
                                                 idade_sexo=self.Cl.idade_sexo())
-        return round(taxa_risco, 2)
+        return nivel_risco
 
 
 if __name__ == '__main__':
-    letra, result = Calculos(1, 2).calculos(exercicio=60,
-                                            taxa_morte_municipio=15,
-                                            cancer_risco=20,
-                                            idade=20,
-                                            imc=10, sexo='M',
-                                            idade_sexo=25)
-    print(result)
+    pass

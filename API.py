@@ -8,14 +8,17 @@ import os
 from Classes.Cliente import Cliente as cl
 from Classes.login_sessao import Sessao as se
 from Classes.Banco_de_Dados import Conectar as co
-from Classes.Banco_de_Dados import Interar_BD as ibd
+from Classes.Banco_de_Dados import Interar_BD_cliente as ibd
 from models.Fuzzy_exemplo import Calculos
+from models.Arvore_decisao import Arvore
 
 
 class api:
     def __init__(self):
         self.S1 = se()
         self.cl1 = None
+        self.tree = None
+        self.predicao = None
 
 
 api = api()
@@ -34,6 +37,8 @@ def Login():
             session['user'] = usuario
             api.S1.CPF = usuario
             api.S1.id_sessao = rd.random_integers(1, 100000)
+            api.predicao = Arvore(IMC=None, MORTE=None, ID=None, EX=None,
+                                  RESULT=None).treinar_arvore()
             while (rep == True):
                 if api.S1.buscar_sessao():
                     api.S1.id_sessao = rd.random_integers(1, 10000000)
@@ -79,6 +84,7 @@ def logar():
     if 'user' in session:
         api.S1.registrar_entrada()
         return redirect(url_for('Home'))
+    return redirect(url_for('Login'))
 
 
 @app1.route('/Sair')
@@ -87,16 +93,20 @@ def sign_out():
         session.pop('user')
         api.S1.registrar_saida()
         return redirect(url_for('Login'))
+    return redirect(url_for('Login'))
 
 
 @app1.route('/resultado', methods=['GET', "POST"])
 def resultado():
-    resultado = 2
-    ca = Calculos(api.cl1, 1200)
-    risco = ca.realizar_calculos()
-    cl.risco = risco
-    ibd(api.cl1.CPF).inserir_banco_classe(api.cl1)
-    return render_template('resultado.html', resultado=risco, usuario=api.S1.buscar_stauts())
+    if 'user' in session:
+        ca = Calculos(api.cl1, 1200)
+        risco = ca.realizar_calculos()
+        api.tree.IMC, api.tree.MORTE, api.tree.ID, api.tree.EX, api.tree.RESULT = api.cl1.imc, 28, api.cl1.idade_sexo(), api.cl1.execicios, risco
+        risco_final = api.tree.segmentar_valores()
+        cl.risco = risco_final
+        ibd(api.cl1.CPF).inserir_banco_classe(api.cl1)
+        return render_template('resultado.html', resultado=risco, usuario=api.S1.buscar_stauts())
+    return redirect(url_for('Login'))
 
 
 if __name__ == '__main__':
