@@ -188,9 +188,10 @@ venv.bak/
 Data/
 Notbook/Untitled.ipynb
 Notbook/Untitled1.ipynb
-.idea
-/Notbook/
+.idea/*
+/Notbook/*
 Notbook/Untitled2.ipynb
 Notbook/kyphosis.csv
 Notbook/loan_data.csv
 "Notbook/\303\201rvores de decis\303\243o e florestas aleat\303\263rias em Python.ipynb"
+/Notbook/Untitled4.ipynb
