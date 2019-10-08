@@ -67,10 +67,7 @@ class Cliente:
         req = requests.get(url_api)
         if req.status_code == 200:
             dados_json = json.loads(req.text)
-            return (dados_json['ibge'],
-                    dados_json['localidade'],
-                    dados_json['Centro'],
-                    dados_json['logradouro'])
+            return int(str(dados_json['ibge'])[3:])
         else:
             return 'NaN'
 
@@ -80,11 +77,11 @@ class Cliente:
         return '/'.join(data)
 
     def buscar_valor_morte(self):
-        cod_municipio, municipio, bairro, rua = self.buscar_municipio()
+        cod_municipio = self.buscar_municipio()
         BD = Conectar(host='localhost', DB='tcc', user='postgres', password='Meteoro585')
         lista_com_val = BD.select(f'select MD.MORTE from Municipio_dados as MD WHERE MD.cod = {cod_municipio};')
         if lista_com_val:
-            return lista_com_val[0], municipio, bairro, rua
+            return lista_com_val[0]
         else:
             return 'fudeu'
 

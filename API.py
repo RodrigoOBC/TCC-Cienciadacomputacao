@@ -19,6 +19,7 @@ class api:
         self.cl1 = None
         self.tree = None
         self.predicao = None
+        self.dados_municipio = None
 
 
 api = api()
@@ -29,6 +30,8 @@ app1.secret_key = os.urandom(24)
 @app1.route('/login', methods=['GET', "POST"])
 @app1.route('/', methods=['GET', "POST"])
 def Login():
+    if 'user' in session:
+        return redirect(url_for('Home'))
     if request.method == 'POST':
         rep = True
         resultado_form = request.form.to_dict()
@@ -37,8 +40,6 @@ def Login():
             session['user'] = usuario
             api.S1.CPF = usuario
             api.S1.id_sessao = rd.random_integers(1, 100000)
-            api.predicao = Arvore(IMC=None, MORTE=None, ID=None, EX=None,
-                                  RESULT=None).treinar_arvore()
             while (rep == True):
                 if api.S1.buscar_sessao():
                     api.S1.id_sessao = rd.random_integers(1, 10000000)
@@ -101,7 +102,12 @@ def resultado():
     if 'user' in session:
         ca = Calculos(api.cl1, 1200)
         risco = ca.realizar_calculos()
-        api.tree.IMC, api.tree.MORTE, api.tree.ID, api.tree.EX, api.tree.RESULT = api.cl1.imc, 28, api.cl1.idade_sexo(), api.cl1.execicios, risco
+        imc = api.cl1.imc
+        id_sexo = api.cl1.idade_sexo()
+        ex = api.cl1.execicios
+        api.tree = Arvore(IMC=imc, MORTE=api.cl1.buscar_valor_morte(), ID=id_sexo, EX=ex,
+                          RESULT=risco)
+        api.predicao = api.tree.treinar_arvore()
         risco_final = api.tree.segmentar_valores()
         cl.risco = risco_final
         ibd(api.cl1.CPF).inserir_banco_classe(api.cl1)
@@ -110,4 +116,4 @@ def resultado():
 
 
 if __name__ == '__main__':
-    app1.run(debug=True)
+    app1.run(debug=True, host='192.168.1.179', port='8000')

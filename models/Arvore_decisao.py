@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import classification_report, confusion_matrix
+from sqlalchemy.engine import create_engine
 
 
 class Arvore:
@@ -11,24 +12,27 @@ class Arvore:
         self.id_sexo = ID
         self.exercicio = EX
         self.result = RESULT
-        self.df_treino = pd.read_csv(r'C:\Users\rodri\PycharmProjects\TCC_Seguros\Data\Treino_tree.csv', sep=';')
+        self.engine = create_engine("postgres://postgres:Meteoro585@localhost:5432/tcc")
+        self.df_treino = None
         self.dtree = DecisionTreeClassifier()
 
     def treinar_arvore(self):
         try:
-            X = self.df_treino.drop('RESULTADO', axis=1)
-            Y = self.df_treino['RESULTADO']
+            conn = self.engine.raw_connection()
+            self.df_treino = pd.read_sql('select * from dados_arvore limit 500', conn)
+            X = self.df_treino.drop('resultado', axis=1)
+            Y = self.df_treino['resultado']
             X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.50)
-            predictions = self.dtree.predict(X_test)
             log = self.dtree.fit(X_train, y_train)
-            return predictions
+            return True
         except:
             return False
 
     def segmentar_valores(self):
-        data = {'IMC': self.imc, 'MORTE': self.morte, 'ID': self.id_sexo, 'EX': self.exercicio}
+        data = {'imc': self.imc, 'morte': self.morte, 'id': self.id_sexo, 'ex': self.exercicio}
         x_test = pd.DataFrame(data=data, index=[0])
         predictions = self.dtree.predict(x_test)
+        x_test['resultado'] = predictions
         self.colocar_dados_dataframe(x_test)
         if predictions[0] == self.result:
             return self.result
@@ -38,4 +42,4 @@ class Arvore:
             return self.result
 
     def colocar_dados_dataframe(self, x_test):
-        self.df_treino.append(data=x_test, ignore_index='False')
+        self.df_treino.append(x_test, ignore_index='False', sort='False')

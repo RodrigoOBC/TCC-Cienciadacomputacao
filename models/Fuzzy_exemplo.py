@@ -159,9 +159,9 @@ class Calculos:
         elif 10 < porcento <= 50:
             return 'M'
         elif 51 <= porcento < 80:
-            return 'A'
+            return 'H'
         elif porcento >= 80:
-            return 'Negado'
+            return 'N'
 
     def calcular_salario(self):
         Salario_base = self.Cl.salarioM
