@@ -55,10 +55,9 @@ def Login():
 
 @app1.route('/home', methods=['GET', "POST"])
 def Home():
-    Nome = None
-    CEP = None
-    erro_home = 'ola'
+
     if 'user' in session:
+        api.cl1 = None
         if request.method == 'POST':
             resultado_form = request.form.to_dict()
             Nome = resultado_form['Nome_input']
@@ -108,10 +107,10 @@ def resultado():
         api.tree = Arvore(IMC=imc, MORTE=api.cl1.buscar_valor_morte(), ID=id_sexo, EX=ex,
                           RESULT=risco)
         api.predicao = api.tree.treinar_arvore()
-        risco_final = api.tree.segmentar_valores()
-        cl.risco = risco_final
+        risco_tree = api.tree.segmentar_valores()
+        cl.risco = risco_tree
         ibd(api.cl1.CPF).inserir_banco_classe(api.cl1)
-        return render_template('resultado.html', resultado=risco, usuario=api.S1.buscar_stauts())
+        return render_template('resultado.html', resultado=cl.risco, usuario=api.S1.buscar_stauts())
     return redirect(url_for('Login'))
 
 

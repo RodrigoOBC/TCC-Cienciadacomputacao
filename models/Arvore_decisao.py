@@ -19,7 +19,7 @@ class Arvore:
     def treinar_arvore(self):
         try:
             conn = self.engine.raw_connection()
-            self.df_treino = pd.read_sql('select * from dados_arvore limit 500', conn)
+            self.df_treino = pd.read_sql('select * from dados_arvore limit 300', conn)
             X = self.df_treino.drop('resultado', axis=1)
             Y = self.df_treino['resultado']
             X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.50)
@@ -38,8 +38,14 @@ class Arvore:
             return self.result
         elif predictions[0] > self.result:
             return predictions[0]
+        elif predictions[0] == 'B':
+            return predictions[0]
         else:
             return self.result
 
     def colocar_dados_dataframe(self, x_test):
         self.df_treino.append(x_test, ignore_index='False', sort='False')
+
+
+if __name__ == '__main__':
+    pass

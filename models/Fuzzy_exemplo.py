@@ -19,7 +19,7 @@ class Calculos:
 
         # exercicio risco
 
-        if 18 <= idade <= 64:
+        if 18 <= idade:
             exercicio_baixo = fuzz.trimf(x_exercicios, [0, 20, 30])
             exercicio_normal = fuzz.trimf(x_exercicios, [21, 50, 60])
             exercicio_alto = fuzz.trimf(x_exercicios, [51, 60, 300])
@@ -148,20 +148,18 @@ class Calculos:
 
         '''  perigo ou (((EA ou EM) ou EB) ou ((imcb ou imvm)ou imca)  ou                          '''
         aggregated = np.fmax(np.fmax(risco_baixo, negado), np.fmax(risco_medio, risco_alto))
-        print(aggregated)
-        result = fuzz.defuzzify.dcentroid(x_saida, aggregated, 64)
-        # result = fuzz.defuzzify.centroid(x_saida, aggregated)
+        result = fuzz.defuzzify.dcentroid(x_saida, aggregated, 50)
         return (self.calculo_valores(result), result)
 
     def calculo_valores(self, porcento) -> str:
         if porcento <= 10:
-            return 'B'
+            return 'A'
         elif 10 < porcento <= 50:
-            return 'M'
+            return 'B'
         elif 51 <= porcento < 80:
-            return 'H'
+            return 'C'
         elif porcento >= 80:
-            return 'N'
+            return 'D'
 
     def calcular_salario(self):
         Salario_base = self.Cl.salarioM
