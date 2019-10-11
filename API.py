@@ -11,6 +11,7 @@ from Classes.Banco_de_Dados import Conectar as co
 from Classes.Banco_de_Dados import Interar_BD_cliente as ibd
 from models.Fuzzy_exemplo import Calculos
 from models.Arvore_decisao import Arvore
+from Classes.Json_sql import json_transformar, buscar_dados
 
 
 class api:
@@ -55,7 +56,6 @@ def Login():
 
 @app1.route('/home', methods=['GET', "POST"])
 def Home():
-
     if 'user' in session:
         api.cl1 = None
         if request.method == 'POST':
@@ -96,22 +96,38 @@ def sign_out():
     return redirect(url_for('Login'))
 
 
-@app1.route('/resultado', methods=['GET', "POST"])
-def resultado():
+@app1.route('/resultado/tipo=<TIPO>', methods=['GET', "POST"])
+def resultado(TIPO):
     if 'user' in session:
-        ca = Calculos(api.cl1, 1200)
-        risco = ca.realizar_calculos()
-        imc = api.cl1.imc
-        id_sexo = api.cl1.idade_sexo()
-        ex = api.cl1.execicios
-        api.tree = Arvore(IMC=imc, MORTE=api.cl1.buscar_valor_morte(), ID=id_sexo, EX=ex,
-                          RESULT=risco)
-        api.predicao = api.tree.treinar_arvore()
-        risco_tree = api.tree.segmentar_valores()
-        cl.risco = risco_tree
-        ibd(api.cl1.CPF).inserir_banco_classe(api.cl1)
-        return render_template('resultado.html', resultado=cl.risco, usuario=api.S1.buscar_stauts())
+        if TIPO == 1:
+            ca = Calculos(api.cl1, 1200)
+            risco = ca.realizar_calculos()
+            imc = api.cl1.imc
+            id_sexo = api.cl1.idade_sexo()
+            ex = api.cl1.execicios
+            api.tree = Arvore(IMC=imc, MORTE=api.cl1.buscar_valor_morte(), ID=id_sexo, EX=ex,
+                              RESULT=risco)
+            api.predicao = api.tree.treinar_arvore()
+            risco_tree = api.tree.segmentar_valores()
+            cl.risco = risco_tree
+            ibd(api.cl1.CPF).inserir_banco_classe(api.cl1)
+            return render_template('resultado.html', resultado=cl.risco, usuario=api.S1.buscar_stauts())
+        elif TIPO == 2:
+            if request.method == 'POST':
+                resultado_form = request.form.to_dict()
+
     return redirect(url_for('Login'))
+
+
+@app1.route('/buscar_cliente/CPF=<CPF>', methods=['GET', "POST"])
+def B_CLIENTE(CPF):
+    if 'user' in session:
+        dados_cliente = buscar_dados().buscar_dados_cliente(CPF)
+        data = json_transformar().passar_json(dados_cliente)[0]
+        print(data)
+        return jsonify(data)
+    else:
+        return jsonify(error=404, text="ERRO")
 
 
 if __name__ == '__main__':

@@ -77,8 +77,4 @@ class Interar_BD_cliente:
 
 
 if __name__ == '__main__':
-    BD = Conectar(host='localhost', DB='tcc', user='postgres', password='Meteoro585')
-    cod_municipio = 100
-    lista_com_val = BD.select('select MD.MORTE from Municipio_dados as MD WHERE MD.cod =%(cod_municipio)s;',
-                              ({'cod_municipio': cod_municipio, }))
-    print(lista_com_val[0])
+    pass
