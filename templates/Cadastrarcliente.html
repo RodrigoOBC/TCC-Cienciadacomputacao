@@ -57,17 +57,6 @@
 
     <p class="error">{{ erro }}</p>
 
-    <form class="card p-2" action="{{ url_for('sign_out') }}">
-        <div class="input-group">
-            <input type="text" id="CPF_B" class="form-control" placeholder="Digite o CPF Para buscar">
-            <div class="input-group-append">
-                <button type="submit" class="btn btn-secondary">Buscar</button>
-
-
-            </div>
-        </div>
-    </form>
-
 </div>
 <div class="col-md-8 order-md-1">
     <h4 class="mb-3">Informações pessoais</h4>
@@ -245,17 +234,6 @@
 
             <p class="error">{{ erro }}</p>
 
-            <form class="card p-2" action="{{ url_for('sign_out') }}">
-                <div class="input-group">
-                    <input type="text" id="CPF_B" class="form-control" placeholder="Digite o CPF Para buscar">
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-secondary">Buscar</button>
-
-
-                    </div>
-                </div>
-            </form>
-
         </div>
         <div class="col-md-8 order-md-1">
             <h4 class="mb-3">Informações pessoais</h4>
@@ -368,7 +346,6 @@
             jQuery(function ($) {
                 $("#CEP").mask("99.999-999");
                 $("#CPF").mask("999.999.999-99");
-                $("#CPF_B").mask("999.999.999-99");
                 $("#IDADE").mask("99/99/9999");
                 $("#Altura").mask("9.99");
 
