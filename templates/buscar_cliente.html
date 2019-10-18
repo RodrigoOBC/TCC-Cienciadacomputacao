@@ -62,6 +62,7 @@
         <p class="lead">Nosso Portal de Negócios é uma área destinada ao cálculo aproximado do valor de cada segurado e
             seus dependentes.<br/>Clique em uma das opções de plano abaixo para preencher as caixas de dados e escolher
             a melhor cobertura para seu plano de seguro. </p>
+        <h1 class="display-4">Valor do Premio: {{ salario }}</h1>
     </div>
 
     <div class="container">
@@ -69,52 +70,17 @@
             {% if risco == 'A' %}
                 <div class="card mb-4 shadow-sm">
                     <div class="card-header">
-                        <h4 class="my-0 font-weight-normal">Padrão Individual</h4>
+                        <h4 class="my-0 font-weight-normal">Plano Baixo Risco</h4>
                     </div>
                     <div class="card-body">
-                        <h1 class="card-title Negocios-card-title">Preço Fixo de R$0 + Taxas <small class="text-muted">/
+                        <h1 class="card-title Negocios-card-title">Preço Fixo de R${{ 9.50+(1.50*vezes) }} <small
+                                class="text-muted"> <br/> /
                             Mensais</small></h1>
                         <ul class="list-unstyled mt-3 mb-4">
-                            <li>Seguradoria individual</li>
-                            <li>Atendimento de suporte por Email</li>
+
+                            <li>Apólice para apenas um beneficiário</li>
                             <li>Apenas para assegurados de baixo risco</li>
-                        </ul>
-                        <button type="button" class="btn btn-lg btn-block btn-outline-primary">Assinar Plano
-                        </button>
-                    </div>
-                </div>
-            {% endif %}
-            {% if risco == 'B' %}
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-header">
-                        <h4 class="my-0 font-weight-normal">Padrão Individual</h4>
-                    </div>
-                    <div class="card-body">
-                        <h1 class="card-title Negocios-card-title">Preço Fixo de $xxx + "taxa" <small
-                                class="text-muted">/
-                            Mensais</small></h1>
-                        <ul class="list-unstyled mt-3 mb-4">
-                            <li>Seguradoria individual</li>
-                            <li>Atendimento de suporte por Email</li>
-                            <li>Apenas para assegurados de baixo risco</li>
-                        </ul>
-                        <button type="button" class="btn btn-lg btn-block btn-outline-primary">Assinar Plano
-                        </button>
-                    </div>
-                </div>
-            {% endif %}
-            {% if risco == 'C' %}
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-header">
-                        <h4 class="my-0 font-weight-normal">Padrão Individual</h4>
-                    </div>
-                    <div class="card-body">
-                        <h1 class="card-title Negocios-card-title">Preço Fixo de $xxx + taxa <small class="text-muted">/
-                            Mensais</small></h1>
-                        <ul class="list-unstyled mt-3 mb-4">
-                            <li>Seguradoria individual</li>
-                            <li>Atendimento de suporte por Email</li>
-                            <li>Apenas para assegurados de baixo risco</li>
+                            <li>Atendimento de suporte por Email/telefone horario comercial</li>
                         </ul>
                         <button type="button" class="btn btn-lg btn-block btn-outline-primary">Assinar Plano
                         </button>
@@ -122,12 +88,27 @@
                 </div>
             {% endif %}
             <div class="card mb-4 shadow-sm">
+
                 <div class="card-header">
                     <h4 class="my-0 font-weight-normal">Padrão Família</h4>
                 </div>
+
                 <div class="card-body">
-                    <h1 class="card-title Negocios-card-title">Preço Fixo de $20 + taxa <small class="text-muted">/
-                        Mensais</small></h1>
+                    {% if risco == 'A' %}
+                        <h1 class="card-title Negocios-card-title">Preço Fixo de R${{ 11.50+(1.50*vezes) }}<small
+                                class="text-muted"> <br/> /
+                            Mensais</small></h1>
+                    {% endif %}
+                    {% if risco == 'B' %}
+                        <h1 class="card-title Negocios-card-title">Preço Fixo de R${{ 11.50+(3.00*vezes) }}<small
+                                class="text-muted"> <br/> /
+                            Mensais</small></h1>
+                    {% endif %}
+                    {% if risco == 'C' %}
+                        <h1 class="card-title Negocios-card-title">Preço Fixo de R${{ 11.50+(5*vezes) }}<small
+                                class="text-muted"> <br/> /
+                            Mensais</small></h1>
+                    {% endif %}
                     <ul class="list-unstyled mt-3 mb-4">
                         <li>Direito a dependentes</li>
                         <li>Renda anual de XX</li>
@@ -140,12 +121,24 @@
                 <div class="card-header">
                     <h4 class="my-0 font-weight-normal">Padrão`Premium</h4>
                 </div>
-                <div class="card-body">
-                    <h1 class="card-title Negocios-card-title">Preço Fixo de $50 + taxa <small class="text-muted">/
+                {% if risco == 'A' %}
+                    <h1 class="card-title Negocios-card-title">Preço Fixo de R${{ 14.50+(1.50*vezes) }}<small
+                            class="text-muted"> <br/> /
                         Mensais</small></h1>
+                {% endif %}
+                {% if risco == 'B' %}
+                    <h1 class="card-title Negocios-card-title">Preço Fixo de R${{ 14.50+(3.00*vezes) }}<small
+                            class="text-muted"> <br/> /
+                        Mensais</small></h1>
+                {% endif %}
+                {% if risco == 'C' %}
+                    <h1 class="card-title Negocios-card-title">Preço Fixo de R${{ 14.50+(5*vezes) }}<small
+                            class="text-muted"> <br/> /
+                        Mensais</small></h1>
+                {% endif %}
                     <ul class="list-unstyled mt-3 mb-4">
-                        <li>Maior cobertura de risco</li>
-                        <li>Direito a dependentes</li>
+                        <li>Maior cobertura de risco.</li>
+                        <li>Direito a 2 ou mais dependentes.</li>
                         <li>Atendimento de suporte 24h por Email/Telefone</li>
 
                     </ul>

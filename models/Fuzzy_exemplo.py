@@ -161,13 +161,6 @@ class Calculos:
         elif porcento >= 80:
             return 'D'
 
-    def calcular_salario(self):
-        Salario_base = self.Cl.salarioM
-        Despesa_base = self.despesa
-        valor_requerido = (Salario_base * 60 * 12)
-        Despesa_base = (Despesa_base * 60 * 12)
-        return (valor_requerido, Despesa_base)
-
     def realizar_calculos(self):
         nivel_risco, taxa_risco = self.calculos(exercicio=self.Cl.execicios,
                                                 taxa_morte_municipio=self.Cl.buscar_valor_morte(),

@@ -27,7 +27,6 @@ api = api()
 app1 = Flask(__name__)
 app1.secret_key = os.urandom(24)
 
-
 @app1.route('/login', methods=['GET', "POST"])
 @app1.route('/', methods=['GET', "POST"])
 def Login():
@@ -73,7 +72,7 @@ def Cadastrar_cliente():
             api.cl1 = cl(Nome=Nome, CEP=CEP, idade=Idade, CPF=CPF, sexo=Sexo, altura=Altura, peso=Peso,
                          salarioM=Salario, dependentes=True, exercicios=Exercicio, risco=None)
 
-            return redirect(url_for('resultado'))
+            return redirect(url_for('buscar'))
         else:
             return render_template('Cadastrarcliente.html', usuario=api.S1.buscar_stauts(), teste=session['user'])
     return redirect(url_for('Login'))
@@ -110,29 +109,65 @@ def resultado():
         risco_tree = api.tree.segmentar_valores()
         cl.risco = risco_tree
         ibd(api.cl1.CPF).inserir_banco_classe(api.cl1)
-        
-        return render_template('buscar_cliente.html', risco=cl.risco)
+        salario_anos = api.cl1.valor_do_plano()
 
-    return redirect(url_for('Login'))
+        risco_json = {
+            'risco': cl.risco,
+            'cpf': api.cl1.CPF,
+            'nome': api.cl1.Nome,
+            'salario': salario_anos[0],
+            'qant': salario_anos[1],
+            'titulo': 'risco',
+        }
+
+        response = app1.response_class(
+            response=json.dumps(risco_json),
+            status=200,
+            mimetype='application/json'
+        )
+        return response
+    erro_json = {
+        'erro': 'não logado',
+        'status': 404,
+        'login': '127.0.0.1:8000'
+    }
+
+    response = app1.response_class(
+        response=json.dumps(erro_json),
+        status=404,
+        mimetype='application/json'
+    )
+    return response
 
 
 @app1.route('/buscar_cliente', methods=['GET', 'POST'])
 def buscar():
     if 'user' in session:
+        json_risco = resultado().get_json()
         resultado_form = request.form.to_dict()
         if request.method == 'POST':
             if 'CPF_BUSCA' in resultado_form:
                 valor = resultado_form['CPF_BUSCA'].replace('-', '').replace('.', '')
                 json_cliente = B_CLIENTE(valor)
                 data = json_cliente.get_json()
+                print(data['qant'])
                 return render_template('buscar_cliente.html', risco=data['risco'],
-                                       nome=data['nome'], cpf=data['cpf'])
+                                       nome=data['nome'], cpf=data['cpf'], salario=data['salario'], vezes=data['qant'])
             else:
-                return render_template('buscar_cliente.html', risco='B')
-        return render_template('buscar_cliente.html', risco='B')
+                return render_template('buscar_cliente.html')
+        return render_template('buscar_cliente.html', risco=json_risco['risco'],
+                               nome=json_risco['nome'], cpf=json_risco['cpf'], salario=json_risco['salario'],
+                               vezes=json_risco['qant'])
     else:
         return redirect(url_for('logar'))
 
+
+@app1.route('/cadastrar_funcionario', methods=['POST'])
+def insert_funcionario():
+    pass
+
+
+# serviços da api
 
 @app1.route('/buscar_cliente/CPF=<CPF>', methods=['GET', "POST"])
 def B_CLIENTE(CPF):
@@ -153,5 +188,72 @@ def B_CLIENTE(CPF):
         return response
 
 
+@app1.route('/incluir_cliente', methods=['POST'])
+def insert_usuario():
+    try:
+        cpf = request.json['cpf']
+        nome = request.json['nome']
+        cep = request.json['cep']
+        idade = request.json['idade']
+        sexo = request.json['sexo']
+        altura = request.json['altura']
+        peso = request.json['peso']
+        salario = request.json['salario']
+        dep = request.json['dep']
+        ex = request.json['ex']
+        risco_c = request.json['risco_c']
+        risco = request.json['risco']
+
+        print(cpf, nome)
+        response = app1.response_class(
+            response=json.dumps({"resultado": "incluido", "login": False}),
+            status=201,
+            mimetype='application/json'
+        )
+        return response
+    except:
+        response = app1.response_class(
+            response=json.dumps({"erro": "não incluido", "login": False}),
+            status=401,
+            mimetype='application/json'
+        )
+        return response
+
+
+@app1.route('/insert_funcionario', methods=['POST'])
+def insert_funcionario():
+    try:
+        cpf = request.json['cpf']
+        nome = request.json['nome']
+        senha = request.json['senha']
+        permicao = request.json['permicao']
+        email = request.json['email']
+
+        lista_valores = [cpf, nome, senha, permicao, email]
+        if buscar_dados().inseri_funcionario(lista_valores):
+
+            response = app1.response_class(
+                response=json.dumps({"resultado": "incluido", "login": "func"}),
+                status=201,
+                mimetype='application/json'
+            )
+            return response
+        else:
+            response = app1.response_class(
+                response=json.dumps({"resultado": "não incluido", "tabela": "func"}),
+                status=401,
+                mimetype='application/json'
+            )
+            return response
+
+    except:
+        response = app1.response_class(
+            response=json.dumps({"erro": "erro na api", "login": False}),
+            status=500,
+            mimetype='application/json'
+        )
+        return response
+
+
 if __name__ == '__main__':
-    app1.run(debug=True, host='192.168.1.179', port='8000')
+    app1.run(debug=True)

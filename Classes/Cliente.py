@@ -10,7 +10,7 @@ from .Banco_de_Dados import Conectar
 class Cliente:
 
     def __init__(self, Nome=None, CEP=None, idade=None, CPF=None, sexo=None, altura=None, peso=None,
-                 salarioM=None, dependentes=None, exercicios=None, risco=None):
+                 salarioM=None, dependentes=False, exercicios=None, risco=None):
         self.id = 0
         self.Nome = Nome
         self.CEP = CEP
@@ -83,7 +83,23 @@ class Cliente:
         if lista_com_val:
             return lista_com_val[0]
         else:
-            return 'fudeu'
+            return 'erro'
+
+    def valor_do_plano(self):
+        valor = self.salarioM * 36
+
+        range_valor = False
+        x = 10000
+        if self.risco != 'N':
+            while (range_valor == False):
+                if valor <= x:
+                    range_valor = True
+                else:
+                    x += 10000
+
+            return (x, x / 10000)
+        else:
+            return 999
 
 
 if __name__ == '__main__':

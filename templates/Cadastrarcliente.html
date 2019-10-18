@@ -2,179 +2,209 @@
 
     {% extends "Head.html" %}
     {% block conteudo %}
-<html lang="en">
-<head>
+        <html lang="en">
+        <head>
 
 
-    <script src="{{ url_for('static', filename='JS/jquery-3.4.1.js') }}"></script>
-    <script src="{{ url_for('static', filename='JS/jquery.maskedinput.js') }}" type="text/javascript"></script>
-    <script src="{{ url_for('static', filename='JS/form-validation.js') }}" type="text/javascript"></script>
+            <script src="{{ url_for('static', filename='JS/jquery-3.4.1.js') }}"></script>
+            <script src="{{ url_for('static', filename='JS/jquery.maskedinput.js') }}" type="text/javascript"></script>
+            <script src="{{ url_for('static', filename='JS/form-validation.js') }}" type="text/javascript"></script>
 
-    <meta charset="utf-8">
-    <title>Cadastro Cliente</title>
-
-
-    <!-- Bootstrap core CSS -->
-
-    <link rel="Stylesheet" href="{{url_for('static',filename='css/bootstrap.min.css')}}">
+            <meta charset="utf-8">
+            <title>Cadastro Cliente</title>
 
 
-    <style>
-        .bd-placeholder-img {
-            font-size: 1.125rem;
-            text-anchor: middle;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
+            <!-- Bootstrap core CSS -->
 
-        @media (min-width: 768px) {
-            .bd-placeholder-img-lg {
-                font-size: 3.5rem;
-            }
-        }
-
-        .error {
-            font-family: "Arial Black";
-            color: #00d80e;
-            background-color: #ff3138;
-        }
-    </style>
-    <!-- Custom styles for this template -->
-
-</head>
-<body class="bg-light">
+            <link rel="Stylesheet" href="{{ url_for('static',filename='css/bootstrap.min.css') }}">
 
 
-<div class="container">
-    <div class="py-5 text-center">
-        {#        <img class="d-block mx-auto mb-4" src="{{ url_for('imagem',filename='SeguroVida.jpg') }}" alt="">#}
-        <p>
-        <h2>Usuario logado </h2>
-        <h2>"{{ teste }}"</h2>
-        <p class="lead">Resumo breve do projeto</div>
+            <style>
+                .bd-placeholder-img {
+                    font-size: 1.125rem;
+                    text-anchor: middle;
+                    -webkit-user-select: none;
+                    -moz-user-select: none;
+                    -ms-user-select: none;
+                    user-select: none;
+                }
 
-    <p class="error">{{ erro }}</p>
+                @media (min-width: 768px) {
+                    .bd-placeholder-img-lg {
+                        font-size: 3.5rem;
+                    }
+                }
 
-</div>
-<div class="col-md-8 order-md-1">
-    <h4 class="mb-3">Informações pessoais</h4>
-    <form class="needs-validation" method="post" novalidate>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label for="Nome Completo">Nome Completo:</label>
-                <input type="text" class="form-control" name="Nome_input" value="" placeholder="digite seu nome"
-                       required>
-                <div class="invalid-feedback">
-                    Nome é obrigatorio
+                .error {
+                    font-family: "Arial Black";
+                    color: #00d80e;
+                    background-color: #ff3138;
+                }
+            </style>
+            <!-- Custom styles for this template -->
+
+        </head>
+        <body class="bg-light">
+
+
+        <div class="container">
+            <div class="py-5 text-center">
+                {#        <img class="d-block mx-auto mb-4" src="{{ url_for('imagem',filename='SeguroVida.jpg') }}" alt="">#}
+                <p>
+                <h2>Usuario logado </h2>
+                <h2>"{{ teste }}"</h2>
+                <p class="lead">Resumo breve do projeto</div>
+
+            <p class="error">{{ erro }}</p>
+
+        </div>
+        <div class="col-md-8 order-md-1">
+            <h4 class="mb-3">Informações pessoais</h4>
+            <form class="needs-validation" method="post" novalidate>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="Nome Completo">Nome Completo*:</label>
+                        <input type="text" class="form-control" name="Nome_input" value="" placeholder="digite seu nome"
+                               required>
+                        <div class="invalid-feedback">
+                            Nome é obrigatorio
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="CEP"> CEP*: </label>
+                        <input type="text" id="CEP" class="form-control" name="CEP_input" placeholder="" value=""
+                               required>
+                        <div class="invalid-feedback">
+                            CEP é obrigatorio
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="CPF"> CPF*: </label>
+                        <input type="text" id="CPF" class="form-control" name="CPF_input" placeholder="" value=""
+                               required>
+                        <div class="invalid-feedback">
+                            CPF é obrigatorio
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="CEP"> email*: </label>
+                        <input type="text" id="email" class="form-control" name="email_input" placeholder="" value=""
+                               required>
+                        <div class="invalid-feedback">
+                            email é obrigatorio
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="CEP"> rua: </label>
+                        <input type="text" id="RUA" class="form-control" name="rua_input" placeholder="" value=""
+                        >
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="CEP"> Municipio: </label>
+                        <input type="text" id="email" class="form-control" name="mun_input" placeholder="" value=""
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-6 mb-3">
+                        <label for="Data de Nascimento"> Data de Nascimento*: </label>
+                        <input type="text" id="IDADE" class="form-control" name="Idade_input" placeholder="" value=""
+                               required>
+                        <div class="invalid-feedback">
+                            Data de Nascimento é obrigatorio
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="SEXO"> SEXO: </label>
+                        <select class="custom-select d-block w-100" id="SEXO" name="Sexo_input" required="">
+                            <option value="">Escolha...</option>
+                            <option>M</option>
+                            <option>F</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Sexo é obrigatorio
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="Peso"> Peso: </label>
+                        <input type="number" id="Peso" class="form-control" name="Peso_input" placeholder="" value=""
+                               required>
+                        <div class="invalid-feedback">
+                            Peso é obrigatorio
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="Altura"> Altura: </label>
+                        <input type="text" id="Altura" class="form-control" name="Altura_input" placeholder="" value=""
+                               required>
+                        <div class="invalid-feedback">
+                            Altura é obrigatorio
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="Salario"> Salario Mensal: </label>
+                        <input type="number" id="Salario" class="form-control" name="Salario_input" placeholder=""
+                               value=""
+                               required>
+                        <div class="invalid-feedback">
+                            Salario Mensal é obrigatorio
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="Exercicio"> Exercicio:* </label>
+                        <input type="number" id="Exercicio" class="form-control" name="Exercicio_input" placeholder=""
+                               value=""
+                               required>
+                        <div class="invalid-feedback">
+                            Exercicio é obrigatorio
+                        </div>
+                    </div>
                 </div>
 
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label for="CEP"> CEP: </label>
-                <input type="text" id="CEP" class="form-control" name="CEP_input" placeholder="" value="" required>
-                <div class="invalid-feedback">
-                    CEP é obrigatorio
-                </div>
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label for="CPF"> CPF: </label>
-                <input type="text" id="CPF" class="form-control" name="CPF_input" placeholder="" value="" required>
-                <div class="invalid-feedback">
-                    CPF é obrigatorio
-                </div>
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label for="Data de Nascimento"> Data de Nascimento: </label>
-                <input type="text" id="IDADE" class="form-control" name="Idade_input" placeholder="" value="" required>
-                <div class="invalid-feedback">
-                    Data de Nascimento é obrigatorio
-                </div>
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label for="SEXO"> SEXO: </label>
-                <select class="custom-select d-block w-100" id="SEXO" name="Sexo_input" required="">
-                    <option value="">Escolha...</option>
-                    <option>M</option>
-                    <option>F</option>
-                </select>
-                <div class="invalid-feedback">
-                    Sexo é obrigatorio
-                </div>
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label for="Peso"> Peso: </label>
-                <input type="number" id="Peso" class="form-control" name="Peso_input" placeholder="" value="" required>
-                <div class="invalid-feedback">
-                    Peso é obrigatorio
-                </div>
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label for="Altura"> Altura: </label>
-                <input type="text" id="Altura" class="form-control" name="Altura_input" placeholder="" value=""
-                       required>
-                <div class="invalid-feedback">
-                    Altura é obrigatorio
-                </div>
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label for="Salario"> Salario Mensal: </label>
-                <input type="number" id="Salario" class="form-control" name="Salario_input" placeholder="" value=""
-                       required>
-                <div class="invalid-feedback">
-                    Salario Mensal é obrigatorio
-                </div>
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label for="Exercicio"> Exercicio:* </label>
-                <input type="number" id="Exercicio" class="form-control" name="Exercicio_input" placeholder="" value=""
-                       required>
-                <div class="invalid-feedback">
-                    Exercicio é obrigatorio
-                </div>
-            </div>
+                <hr class="mb-4">
+                <button class="btn btn-primary btn-lg btn-block" type="submit">Realizar o Calculo de risco</button>
+            </form>
+        </div>
         </div>
 
-        <hr class="mb-4">
-        <button class="btn btn-primary btn-lg btn-block" type="submit">Realizar o Calculo de risco</button>
-    </form>
-</div>
-</div>
+        <footer class="my-5 pt-5 text-muted text-center text-small">
+            <p class="mb-1">&copy; 2017-2019 Company Name</p>
+            <ul class="list-inline">
+                <li class="list-inline-item"><a href="#">Privacy</a></li>
+                <li class="list-inline-item"><a href="#">Terms</a></li>
+                <li class="list-inline-item"><a href="#">Support</a></li>
+            </ul>
+        </footer>
+        </div>
 
-<footer class="my-5 pt-5 text-muted text-center text-small">
-    <p class="mb-1">&copy; 2017-2019 Company Name</p>
-    <ul class="list-inline">
-        <li class="list-inline-item"><a href="#">Privacy</a></li>
-        <li class="list-inline-item"><a href="#">Terms</a></li>
-        <li class="list-inline-item"><a href="#">Support</a></li>
-    </ul>
-</footer>
-</div>
+        <script>
+            jQuery(function ($) {
+                $("#CEP").mask("99.999-999");
+                $("#CPF").mask("999.999.999-99");
+                $("#CPF_B").mask("999.999.999-99");
+                $("#IDADE").mask("99/99/9999");
+                $("#Altura").mask("9.99");
 
-<script>
-    jQuery(function ($) {
-        $("#CEP").mask("99.999-999");
-        $("#CPF").mask("999.999.999-99");
-        $("#CPF_B").mask("999.999.999-99");
-        $("#IDADE").mask("99/99/9999");
-        $("#Altura").mask("9.99");
-
-    });
+            });
 
 
-</script>
+        </script>
 
-</body>
-</html>
+        </body>
+        </html>
     {% endblock conteudo %}
 {% else %}
     {% extends "Head2.html" %}
@@ -240,7 +270,7 @@
             <form class="needs-validation" method="post" novalidate>
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="Nome Completo">Nome Completo:</label>
+                        <label for="Nome Completo">Nome Completo*:</label>
                         <input type="text" class="form-control" name="Nome_input" value="" placeholder="digite seu nome"
                                required>
                         <div class="invalid-feedback">
@@ -250,7 +280,7 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label for="CEP"> CEP: </label>
+                        <label for="CEP"> CEP*: </label>
                         <input type="text" id="CEP" class="form-control" name="CEP_input" placeholder="" value=""
                                required>
                         <div class="invalid-feedback">
@@ -259,7 +289,7 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label for="CPF"> CPF: </label>
+                        <label for="CPF"> CPF*: </label>
                         <input type="text" id="CPF" class="form-control" name="CPF_input" placeholder="" value=""
                                required>
                         <div class="invalid-feedback">
@@ -268,7 +298,31 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label for="Data de Nascimento"> Data de Nascimento: </label>
+                        <label for="CEP"> email*: </label>
+                        <input type="text" id="email" class="form-control" name="email_input" placeholder="" value=""
+                               required>
+                        <div class="invalid-feedback">
+                            email é obrigatorio
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="CEP"> rua: </label>
+                        <input type="text" id="email" class="form-control" name="email_input" placeholder="" value=""
+                        >
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="CEP"> Municipio: </label>
+                        <input type="text" id="email" class="form-control" name="email_input" placeholder="" value=""
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-6 mb-3">
+                        <label for="Data de Nascimento"> Data de Nascimento*: </label>
                         <input type="text" id="IDADE" class="form-control" name="Idade_input" placeholder="" value=""
                                required>
                         <div class="invalid-feedback">
@@ -290,7 +344,7 @@
 
                     <div class="col-md-6 mb-3">
                         <label for="Peso"> Peso: </label>
-                        <input type="text" id="Peso" class="form-control" name="Peso_input" placeholder="" value=""
+                        <input type="number" id="Peso" class="form-control" name="Peso_input" placeholder="" value=""
                                required>
                         <div class="invalid-feedback">
                             Peso é obrigatorio
@@ -299,8 +353,7 @@
 
                     <div class="col-md-6 mb-3">
                         <label for="Altura"> Altura: </label>
-                        <input type="number" id="Altura" class="form-control" name="Altura_input" placeholder=""
-                               value=""
+                        <input type="text" id="Altura" class="form-control" name="Altura_input" placeholder="" value=""
                                required>
                         <div class="invalid-feedback">
                             Altura é obrigatorio
@@ -308,9 +361,10 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label for="Salario"> Salario Mensal:* </label>
-                        <input type="text" id="Salario" class="form-control" name="Salario_input" placeholder=""
-                               value="" required>
+                        <label for="Salario"> Salario Mensal: </label>
+                        <input type="number" id="Salario" class="form-control" name="Salario_input" placeholder=""
+                               value=""
+                               required>
                         <div class="invalid-feedback">
                             Salario Mensal é obrigatorio
                         </div>
@@ -319,7 +373,8 @@
                     <div class="col-md-6 mb-3">
                         <label for="Exercicio"> Exercicio:* </label>
                         <input type="number" id="Exercicio" class="form-control" name="Exercicio_input" placeholder=""
-                               value="" required>
+                               value=""
+                               required>
                         <div class="invalid-feedback">
                             Exercicio é obrigatorio
                         </div>

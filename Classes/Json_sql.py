@@ -27,6 +27,15 @@ class buscar_dados:
                              Column('dependentes', BOOLEAN),
                              Column('risco', String(1)),
                              )
+        self.Funcionario = Table('Funcionario', self.metadata,
+                                 Column('id_login', Integer, primary_key=True),
+                                 Column('cpf', String(9)),
+                                 Column('senha', String(33)),
+                                 Column('nome', String(14)),
+                                 Column('permicao', String(20)),
+                                 Column('email', String(120)),
+
+                                 )
 
     def criar_cliente(self):
         self.metadata.create_all()
@@ -41,6 +50,13 @@ class buscar_dados:
         row = self.conectar_BD().execute(valor).fetchone()
         return row
 
+    def inseri_funcionario(self, valor):
+        try:
+            self.Funcionario.insert().values(cpf=valor[0], senha=valor[1], nome=valor[2], permicao=valor[3],
+                                             email=valor[4]).execute()
+            return True
+        except:
+            return False
 
 class json_transformar:
     def __init__(self):

@@ -69,8 +69,8 @@ class Interar_BD_cliente:
         try:
             self.BD.insert(
                 f"insert into Cliente values (DEFAULT,'{Cliente.Nome}','{Cliente.CEP}',"
-                f"'{Cliente.CPF}','{Cliente.idade}','{Cliente.sexo}',{Cliente.altura},{Cliente.peso},"
-                f"{Cliente.salarioM},{Cliente.dep}, {Cliente.execicios}, 0.0, {Cliente.risco});")
+                f"'{Cliente.CPF}',{Cliente.arrumar_data()},'{Cliente.sexo}',{Cliente.altura},{Cliente.peso},"
+                f"{Cliente.salarioM},{Cliente.dep}, {Cliente.execicios}, 0.0, '{Cliente.risco}');")
             return True
         except:
             return False
