@@ -27,6 +27,7 @@ api = api()
 app1 = Flask(__name__)
 app1.secret_key = os.urandom(24)
 
+
 @app1.route('/login', methods=['GET', "POST"])
 @app1.route('/', methods=['GET', "POST"])
 def Login():
@@ -108,8 +109,25 @@ def resultado():
         api.predicao = api.tree.treinar_arvore()
         risco_tree = api.tree.segmentar_valores()
         cl.risco = risco_tree
-        ibd(api.cl1.CPF).inserir_banco_classe(api.cl1)
-        salario_anos = api.cl1.valor_do_plano()
+        cliente_json = {
+            "cpf": api.cl1.CPF,
+            "nome": api.cl1.Nome,
+            "cep": api.cl1.CEP,
+            "idade": api.cl1.arrumar_data(),
+            "sexo": api.cl1.sexo,
+            "altura": api.cl1.altura,
+            "peso": api.cl1.peso,
+            "salario": api.cl1.salarioM,
+            "dep": api.cl1.dep,
+            "risco_c": 0,
+            "ex": api.cl1.execicios,
+            "risco": cl.risco
+        }
+
+        cliente_json = json.dumps(cliente_json)
+        resposta = requests.post("http://127.0.0.1:5000/incluir_cliente", json=cliente_json)
+        print(resposta)
+        salario_anos = api.cl1.valor_do_plano(api.cl1.salarioM)
 
         risco_json = {
             'risco': cl.risco,
@@ -147,24 +165,27 @@ def buscar():
         resultado_form = request.form.to_dict()
         if request.method == 'POST':
             if 'CPF_BUSCA' in resultado_form:
-                valor = resultado_form['CPF_BUSCA'].replace('-', '').replace('.', '')
+                valor = resultado_form['CPF_BUSCA']
                 json_cliente = B_CLIENTE(valor)
                 data = json_cliente.get_json()
                 print(data['qant'])
                 return render_template('buscar_cliente.html', risco=data['risco'],
-                                       nome=data['nome'], cpf=data['cpf'], salario=data['salario'], vezes=data['qant'])
+                                       nome=data['nome'], cpf=data['cpf'], salario=data['valor'], vezes=data['qant'])
             else:
                 return render_template('buscar_cliente.html')
-        return render_template('buscar_cliente.html', risco=json_risco['risco'],
-                               nome=json_risco['nome'], cpf=json_risco['cpf'], salario=json_risco['salario'],
-                               vezes=json_risco['qant'])
+        return render_template('buscar_cliente.html')
     else:
         return redirect(url_for('logar'))
 
 
-@app1.route('/cadastrar_funcionario', methods=['POST'])
-def insert_funcionario():
-    pass
+@app1.route('/cadastrar_funcionario', methods=['GET', 'POST'])
+def cadastrar_funcionario():
+    if request.method == 'POST':
+        resultado_form = request.form
+        resultado = requests.post("http://127.0.0.1:5000/insert_funcionario", json=resultado_form)
+        print(resultado)
+        return render_template('cadastrar_funcionario.html')
+    return render_template('cadastrar_funcionario.html')
 
 
 # serviços da api
@@ -191,30 +212,42 @@ def B_CLIENTE(CPF):
 @app1.route('/incluir_cliente', methods=['POST'])
 def insert_usuario():
     try:
-        cpf = request.json['cpf']
-        nome = request.json['nome']
-        cep = request.json['cep']
-        idade = request.json['idade']
-        sexo = request.json['sexo']
-        altura = request.json['altura']
-        peso = request.json['peso']
-        salario = request.json['salario']
-        dep = request.json['dep']
-        ex = request.json['ex']
-        risco_c = request.json['risco_c']
-        risco = request.json['risco']
+        valor = request.get_json()
+        valor = json.loads(valor)
+        print(type(valor))
+        cpf = valor['cpf']
+        nome = valor['nome']
+        cep = valor['cep']
+        idade = valor['idade']
+        sexo = valor['sexo']
+        altura = valor['altura']
+        peso = valor['peso']
+        salario = valor['salario']
+        dep = valor['dep']
+        ex = valor['ex']
+        risco_c = valor['risco_c']
+        risco = valor['risco']
 
-        print(cpf, nome)
-        response = app1.response_class(
-            response=json.dumps({"resultado": "incluido", "login": False}),
-            status=201,
-            mimetype='application/json'
-        )
-        return response
+        if buscar_dados().inserir_cliente(
+                [cpf, nome, cep, idade, sexo, altura, peso, salario, dep, ex, risco_c, risco]):
+            response = app1.response_class(
+                response=json.dumps({"resultado": "incluido", "login": False}),
+                status=201,
+                mimetype='application/json'
+            )
+            return response
+        else:
+            response = app1.response_class(
+                response=json.dumps({"erro": "Não incluiu", "login": False}),
+                status=401,
+                mimetype='application/json'
+            )
+            return response
     except:
+
         response = app1.response_class(
-            response=json.dumps({"erro": "não incluido", "login": False}),
-            status=401,
+            response=json.dumps({"erro": "Quebrou", "login": False}),
+            status=500,
             mimetype='application/json'
         )
         return response
@@ -223,13 +256,15 @@ def insert_usuario():
 @app1.route('/insert_funcionario', methods=['POST'])
 def insert_funcionario():
     try:
+        print(request.json)
         cpf = request.json['cpf']
         nome = request.json['nome']
+        nome += " " + request.json['lastname_input']
         senha = request.json['senha']
         permicao = request.json['permicao']
         email = request.json['email']
 
-        lista_valores = [cpf, nome, senha, permicao, email]
+        lista_valores = [cpf, senha, nome, permicao, email]
         if buscar_dados().inseri_funcionario(lista_valores):
 
             response = app1.response_class(

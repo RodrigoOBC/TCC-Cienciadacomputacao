@@ -23,10 +23,13 @@ class Sessao:
         self.BD.insert(query=f"insert into Sessao values ('{self.id_sessao}','{self.CPF}','{str(self.data_hora)}','S')")
 
     def logar(self, usuario, senha):
-        Entrada = self.BD.login_buscar(usuario=usuario, senha=senha)
-        if Entrada[0] == 'TRUE':
-            return True
-        else:
+        try:
+            Entrada = self.BD.login_buscar(usuario=usuario, senha=senha)
+            if 'TRUE' in Entrada:
+                return True
+            else:
+                return False
+        except:
             return False
 
     def buscar_sessao(self):
@@ -38,14 +41,14 @@ class Sessao:
             query=f"select  Case When sessao.id_sessao = ({self.id_sessao})  then 'TRUE' Else 'False' End AS COND From sessao;")
         if not valor:
             return False
-        elif valor[0] == 'TRUE':
+        elif 'TRUE' in valor:
             return True
         else:
             return False
 
     def buscar_stauts(self):
         print(self.CPF)
-        resulta = self.BD.select(f"SELECT L.permicao FROM Login_user as L where L.cpf in ('{self.CPF}');")
+        resulta = self.BD.select(f"SELECT F.permicao FROM \"Funcionario\" as F where F.cpf in ('{self.CPF}');")
         return resulta[0]
 
 if __name__ == '__main__':

@@ -48,7 +48,7 @@ class Conectar:
         try:
             self.Conectar()
             valores = self.con.all(
-                f"select  Case When Login_user.cpf = '{usuario}' and Login_user.senha = '{senha}' then 'TRUE' Else 'False' End AS COND From Login_user;")
+                f'select  Case When "Funcionario".cpf = \'{usuario}\' and "Funcionario".senha = \'{senha}\' then \'TRUE\' Else \'False\' End AS COND From "Funcionario";')
             return valores
         except:
             return False

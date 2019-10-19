@@ -85,9 +85,8 @@ class Cliente:
         else:
             return 'erro'
 
-    def valor_do_plano(self):
-        valor = self.salarioM * 36
-
+    def valor_do_plano(self, salario):
+        valor = salario * 36
         range_valor = False
         x = 10000
         if self.risco != 'N':
