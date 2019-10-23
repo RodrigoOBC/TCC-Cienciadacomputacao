@@ -48,7 +48,7 @@ class Conectar:
         try:
             self.Conectar()
             valores = self.con.all(
-                f"select  Case When Login_user.cpf = '{usuario}' and Login_user.senha = '{senha}' then 'TRUE' Else 'False' End AS COND From Login_user;")
+                f'select  Case When "Funcionario".cpf = \'{usuario}\' and "Funcionario".senha = \'{senha}\' then \'TRUE\' Else \'False\' End AS COND From "Funcionario";')
             return valores
         except:
             return False
@@ -69,16 +69,12 @@ class Interar_BD_cliente:
         try:
             self.BD.insert(
                 f"insert into Cliente values (DEFAULT,'{Cliente.Nome}','{Cliente.CEP}',"
-                f"'{Cliente.CPF}','{Cliente.idade}','{Cliente.sexo}',{Cliente.altura},{Cliente.peso},"
-                f"{Cliente.salarioM},{Cliente.dep}, {Cliente.execicios}, 0.0, {Cliente.risco});")
+                f"'{Cliente.CPF}',{Cliente.arrumar_data()},'{Cliente.sexo}',{Cliente.altura},{Cliente.peso},"
+                f"{Cliente.salarioM},{Cliente.dep}, {Cliente.execicios}, 0.0, '{Cliente.risco}');")
             return True
         except:
             return False
 
 
 if __name__ == '__main__':
-    BD = Conectar(host='localhost', DB='tcc', user='postgres', password='Meteoro585')
-    cod_municipio = 100
-    lista_com_val = BD.select('select MD.MORTE from Municipio_dados as MD WHERE MD.cod =%(cod_municipio)s;',
-                              ({'cod_municipio': cod_municipio, }))
-    print(lista_com_val[0])
+    pass

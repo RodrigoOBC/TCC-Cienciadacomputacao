@@ -11,6 +11,7 @@ from Classes.Banco_de_Dados import Conectar as co
 from Classes.Banco_de_Dados import Interar_BD_cliente as ibd
 from models.Fuzzy_exemplo import Calculos
 from models.Arvore_decisao import Arvore
+from Classes.Json_sql import json_transformar, buscar_dados
 
 
 class api:
@@ -31,7 +32,7 @@ app1.secret_key = os.urandom(24)
 @app1.route('/', methods=['GET', "POST"])
 def Login():
     if 'user' in session:
-        return redirect(url_for('Home'))
+        return redirect(url_for('Cadastrar_cliente'))
     if request.method == 'POST':
         rep = True
         resultado_form = request.form.to_dict()
@@ -54,11 +55,9 @@ def Login():
 
 
 @app1.route('/home', methods=['GET', "POST"])
-def Home():
-    Nome = None
-    CEP = None
-    erro_home = 'ola'
+def Cadastrar_cliente():
     if 'user' in session:
+        api.cl1 = None
         if request.method == 'POST':
             resultado_form = request.form.to_dict()
             Nome = resultado_form['Nome_input']
@@ -74,9 +73,9 @@ def Home():
             api.cl1 = cl(Nome=Nome, CEP=CEP, idade=Idade, CPF=CPF, sexo=Sexo, altura=Altura, peso=Peso,
                          salarioM=Salario, dependentes=True, exercicios=Exercicio, risco=None)
 
-            return redirect(url_for('resultado'))
+            return redirect(url_for('buscar'))
         else:
-            return render_template('Home.html', usuario=api.S1.buscar_stauts(), teste=session['user'])
+            return render_template('Cadastrarcliente.html', usuario=api.S1.buscar_stauts(), teste=session['user'])
     return redirect(url_for('Login'))
 
 
@@ -84,7 +83,7 @@ def Home():
 def logar():
     if 'user' in session:
         api.S1.registrar_entrada()
-        return redirect(url_for('Home'))
+        return redirect(url_for('Cadastrar_cliente'))
     return redirect(url_for('Login'))
 
 
@@ -108,12 +107,190 @@ def resultado():
         api.tree = Arvore(IMC=imc, MORTE=api.cl1.buscar_valor_morte(), ID=id_sexo, EX=ex,
                           RESULT=risco)
         api.predicao = api.tree.treinar_arvore()
-        risco_final = api.tree.segmentar_valores()
-        cl.risco = risco_final
-        ibd(api.cl1.CPF).inserir_banco_classe(api.cl1)
-        return render_template('resultado.html', resultado=risco, usuario=api.S1.buscar_stauts())
-    return redirect(url_for('Login'))
+        risco_tree = api.tree.segmentar_valores()
+        cl.risco = risco_tree
+        cliente_json = {
+            "cpf": api.cl1.CPF,
+            "nome": api.cl1.Nome,
+            "cep": api.cl1.CEP,
+            "idade": api.cl1.arrumar_data(),
+            "sexo": api.cl1.sexo,
+            "altura": api.cl1.altura,
+            "peso": api.cl1.peso,
+            "salario": api.cl1.salarioM,
+            "dep": api.cl1.dep,
+            "risco_c": 0,
+            "ex": api.cl1.execicios,
+            "risco": cl.risco
+        }
+
+        cliente_json = json.dumps(cliente_json)
+        resposta = requests.post("http://127.0.0.1:5000/incluir_cliente", json=cliente_json)
+        print(resposta)
+        salario_anos = api.cl1.valor_do_plano(api.cl1.salarioM)
+
+        risco_json = {
+            'risco': cl.risco,
+            'cpf': api.cl1.CPF,
+            'nome': api.cl1.Nome,
+            'salario': salario_anos[0],
+            'qant': salario_anos[1],
+            'titulo': 'risco',
+        }
+
+        response = app1.response_class(
+            response=json.dumps(risco_json),
+            status=200,
+            mimetype='application/json'
+        )
+        return response
+    erro_json = {
+        'erro': 'não logado',
+        'status': 404,
+        'login': '127.0.0.1:8000'
+    }
+
+    response = app1.response_class(
+        response=json.dumps(erro_json),
+        status=404,
+        mimetype='application/json'
+    )
+    return response
+
+
+@app1.route('/buscar_cliente', methods=['GET', 'POST'])
+def buscar():
+    if 'user' in session:
+        json_risco = resultado().get_json()
+        resultado_form = request.form.to_dict()
+        if request.method == 'POST':
+            if 'CPF_BUSCA' in resultado_form:
+                valor = resultado_form['CPF_BUSCA']
+                json_cliente = B_CLIENTE(valor)
+                data = json_cliente.get_json()
+                print(data['qant'])
+                return render_template('buscar_cliente.html', risco=data['risco'],
+                                       nome=data['nome'], cpf=data['cpf'], salario=data['valor'], vezes=data['qant'])
+            else:
+                return render_template('buscar_cliente.html')
+        return render_template('buscar_cliente.html', risco=json_risco['risco'],
+                               nome=json_risco['nome'], cpf=json_risco['cpf'], salario=json_risco['salario'],
+                               vezes=json_risco['qant'])
+    else:
+        return redirect(url_for('logar'))
+
+
+@app1.route('/cadastrar_funcionario', methods=['GET', 'POST'])
+def cadastrar_funcionario():
+    if request.method == 'POST':
+        resultado_form = request.form
+        resultado = requests.post("http://127.0.0.1:5000/insert_funcionario", json=resultado_form)
+        print(resultado)
+        return render_template('cadastrar_funcionario.html')
+    return render_template('cadastrar_funcionario.html')
+
+
+# serviços da api
+
+@app1.route('/buscar_cliente/CPF=<CPF>', methods=['GET', "POST"])
+def B_CLIENTE(CPF):
+    if 'user' in session:
+        data = json_transformar().passar_cliente_json(CPF)
+        response = app1.response_class(
+            response=json.dumps(data),
+            status=200,
+            mimetype='application/json'
+        )
+        return response
+    else:
+        response = app1.response_class(
+            response=json.dumps({"erro": "not user", "login": False}),
+            status=404,
+            mimetype='application/json'
+        )
+        return response
+
+
+@app1.route('/incluir_cliente', methods=['POST'])
+def insert_usuario():
+    try:
+        valor = request.get_json()
+        valor = json.loads(valor)
+        print(type(valor))
+        cpf = valor['cpf']
+        nome = valor['nome']
+        cep = valor['cep']
+        idade = valor['idade']
+        sexo = valor['sexo']
+        altura = valor['altura']
+        peso = valor['peso']
+        salario = valor['salario']
+        dep = valor['dep']
+        ex = valor['ex']
+        risco_c = valor['risco_c']
+        risco = valor['risco']
+
+        if buscar_dados().inserir_cliente(
+                [cpf, nome, cep, idade, sexo, altura, peso, salario, dep, ex, risco_c, risco]):
+            response = app1.response_class(
+                response=json.dumps({"resultado": "incluido", "login": False}),
+                status=201,
+                mimetype='application/json'
+            )
+            return response
+        else:
+            response = app1.response_class(
+                response=json.dumps({"erro": "Não incluiu", "login": False}),
+                status=401,
+                mimetype='application/json'
+            )
+            return response
+    except:
+
+        response = app1.response_class(
+            response=json.dumps({"erro": "Quebrou", "login": False}),
+            status=500,
+            mimetype='application/json'
+        )
+        return response
+
+
+@app1.route('/insert_funcionario', methods=['POST'])
+def insert_funcionario():
+    try:
+        print(request.json)
+        cpf = request.json['cpf']
+        nome = request.json['nome']
+        nome += " " + request.json['lastname_input']
+        senha = request.json['senha']
+        permicao = request.json['permicao']
+        email = request.json['email']
+
+        lista_valores = [cpf, senha, nome, permicao, email]
+        if buscar_dados().inseri_funcionario(lista_valores):
+
+            response = app1.response_class(
+                response=json.dumps({"resultado": "incluido", "login": "func"}),
+                status=201,
+                mimetype='application/json'
+            )
+            return response
+        else:
+            response = app1.response_class(
+                response=json.dumps({"resultado": "não incluido", "tabela": "func"}),
+                status=401,
+                mimetype='application/json'
+            )
+            return response
+
+    except:
+        response = app1.response_class(
+            response=json.dumps({"erro": "erro na api", "login": False}),
+            status=500,
+            mimetype='application/json'
+        )
+        return response
 
 
 if __name__ == '__main__':
-    app1.run(debug=True, host='192.168.1.179', port='8000')
+    app1.run(debug=True)
