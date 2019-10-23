@@ -173,7 +173,9 @@ def buscar():
                                        nome=data['nome'], cpf=data['cpf'], salario=data['valor'], vezes=data['qant'])
             else:
                 return render_template('buscar_cliente.html')
-        return render_template('buscar_cliente.html')
+        return render_template('buscar_cliente.html', risco=json_risco['risco'],
+                               nome=json_risco['nome'], cpf=json_risco['cpf'], salario=json_risco['salario'],
+                               vezes=json_risco['qant'])
     else:
         return redirect(url_for('logar'))
 
