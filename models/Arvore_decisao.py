@@ -17,6 +17,10 @@ class Arvore:
         self.dtree = DecisionTreeClassifier()
 
     def treinar_arvore(self):
+        '''
+        Função para treinamento da arvore baseado nos dados contidos no Banco de dados
+        :return: True para treinametno correto, False para falha
+        '''
         try:
             conn = self.engine.raw_connection()
             self.df_treino = pd.read_sql('select * from dados_arvore limit 300', conn)
@@ -29,6 +33,10 @@ class Arvore:
             return False
 
     def segmentar_valores(self):
+        '''
+        Função que seguimenta os clientes de acordo com seu risco usando arvore de decisão
+        :return: Grupo em que o cliente faz parte
+        '''
         data = {'imc': self.imc, 'morte': self.morte, 'id': self.id_sexo, 'ex': self.exercicio}
         x_test = pd.DataFrame(data=data, index=[0])
         predictions = self.dtree.predict(x_test)
@@ -36,12 +44,8 @@ class Arvore:
         self.colocar_dados_dataframe(x_test)
         if predictions[0] == self.result:
             return self.result
-        elif predictions[0] > self.result:
-            return predictions[0]
-        elif predictions[0] == 'B':
-            return predictions[0]
         else:
-            return self.result
+            return predictions[0]
 
     def colocar_dados_dataframe(self, x_test):
         self.df_treino.append(x_test, ignore_index='False', sort='False')

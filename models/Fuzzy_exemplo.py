@@ -10,6 +10,17 @@ class Calculos:
         self.despesa = despesa
 
     def calculos(self, exercicio, taxa_morte_municipio, cancer_risco, idade, imc, sexo=None, idade_sexo=None) -> tuple:
+        '''
+        Função que realiza o calculo de risco com o metodo de fuzzy
+        :param exercicio: valor de exercicio feito pelo cliente
+        :param taxa_morte_municipio: calculo de mortes a cada 100 mil
+        :param cancer_risco: valor do risco de se ter cancer
+        :param idade: idade do cliente
+        :param imc: imc calculado do cliente
+        :param sexo: sexo do cliente
+        :param idade_sexo: calculo de risco de morte por sexo
+        :return: o valor do risco e o cluster que ele faz parte
+        '''
         x_exercicios = np.arange(0, 300, 1)  # execicios por dia [0,7]
         x_taxa_morte_municipio = np.arange(0, 301, 1)  # taxa de homicidios por ano [0,300]
         x_saida = np.arange(0, 101, 1)  # saida em porcento
@@ -152,6 +163,12 @@ class Calculos:
         return (self.calculo_valores(result), result)
 
     def calculo_valores(self, porcento) -> str:
+        '''
+        Função que classifica o em clusters de acordo com a porcentagem de risco apresentada por ele
+
+        :param porcento: Valor da porcentagem de risco atribuida ao cliente
+        :return: O grupo de risco pertencente.
+        '''
         if porcento <= 10:
             return 'A'
         elif 10 < porcento <= 50:
