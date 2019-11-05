@@ -35,35 +35,35 @@ class Calculos:
         # exercicio risco
 
         if 18 <= idade:
-            exercicio_baixo = fuzz.trimf(x_exercicios, [0, 20, 30])
-            exercicio_normal = fuzz.trimf(x_exercicios, [21, 50, 60])
-            exercicio_alto = fuzz.trimf(x_exercicios, [51, 60, 300])
+            x_exercicios['baixo'] = fuzz.trimf(x_exercicios.universe, [0, 0, 30])
+            x_exercicios['medio'] = fuzz.trimf(x_exercicios.universe, [0, 50, 60])
+            x_exercicios['alto'] = fuzz.trimf(x_exercicios.universe, [50, 100, 99999])
         elif idade < 18:
-            exercicio_baixo = fuzz.trimf(x_exercicios, [0, 50, 75])
-            exercicio_normal = fuzz.trimf(x_exercicios, [51, 150, 214])
-            exercicio_alto = fuzz.trimf(x_exercicios, [151, 235, 300])
+            x_exercicios['baixo'] = fuzz.trimf(x_exercicios.universe, [0, 0, 75])
+            x_exercicios['medio'] = fuzz.trimf(x_exercicios.universe, [0, 75, 214])
+            x_exercicios['medio'] = fuzz.trimf(x_exercicios.universe, [75, 214, 999999])
 
             # municipio risco
 
-        taxa_morte_municipio_baixissimo = fuzz.trimf(x_taxa_morte_municipio, [0, 10, 20])
-        taxa_morte_municipio_baixo = fuzz.trimf(x_taxa_morte_municipio, [11, 30, 40])
-        taxa_morte_municipio_normal = fuzz.trimf(x_taxa_morte_municipio, [31, 50, 60])
-        taxa_morte_municipio_alto = fuzz.trimf(x_taxa_morte_municipio, [51, 70, 80])
-        taxa_morte_municipio_altissimo = fuzz.trimf(x_taxa_morte_municipio, [71, 100, 200])
+        x_taxa_morte_municipio['baixissimo'] = fuzz.trimf(x_taxa_morte_municipio.universe, [0, 0, 20])
+        x_taxa_morte_municipio['baixo'] = fuzz.trimf(x_taxa_morte_municipio.universe, [0, 20, 40])
+        x_taxa_morte_municipio['normal'] = fuzz.trimf(x_taxa_morte_municipio.universe, [20, 40, 60])
+        x_taxa_morte_municipio['alto'] = fuzz.trimf(x_taxa_morte_municipio.universe, [40, 70, 80])
+        x_taxa_morte_municipio['muito alto'] = fuzz.trimf(x_taxa_morte_municipio.universe, [70, 100, 99999])
 
         # IMC
         if sexo == 'M':
-            imc_baixo = fuzz.trimf(x_imc, [0, 10, 20])
-            imc_medio = fuzz.trimf(x_imc, [11, 20, 24])
-            imc_O_leve = fuzz.trimf(x_imc, [21, 26, 29])
-            imc_O_moderada = fuzz.trimf(x_imc, [27, 35, 39])
-            imc_O_Morbida = fuzz.trimf(x_imc, [36, 45, 50])
+            x_imc['baixo'] = fuzz.trimf(x_imc.universe, [0, 0, 20])
+            x_imc['medio'] = fuzz.trimf(x_imc.universe, [0, 20, 24])
+            x_imc['OL'] = fuzz.trimf(x_imc.universe, [20, 24, 29])
+            x_imc['OM'] = fuzz.trimf(x_imc.universe, [24, 29, 39])
+            x_imc['OMB'] = fuzz.trimf(x_imc.universe, [29, 39, 99999])
         elif sexo == 'F':
-            imc_baixo = fuzz.trimf(x_imc, [0, 5, 19])
-            imc_medio = fuzz.trimf(x_imc, [6, 20, 24])
-            imc_O_leve = fuzz.trimf(x_imc, [21, 26, 29])
-            imc_O_moderada = fuzz.trimf(x_imc, [27, 35, 39])
-            imc_O_Morbida = fuzz.trimf(x_imc, [36, 45, 50])
+            x_imc['baixo'] = fuzz.trimf(x_imc.universe, [0, 0, 19])
+            x_imc['medio'] = fuzz.trimf(x_imc.universe, [0, 19, 23])
+            x_imc['OL'] = fuzz.trimf(x_imc.universe, [19, 23, 30])
+            x_imc['OM'] = fuzz.trimf(x_imc.universe, [23, 30, 35])
+            x_imc['OMB'] = fuzz.trimf(x_imc.universe, [30, 35, 99999])
 
         # Diabetes
 
@@ -74,17 +74,16 @@ class Calculos:
 
         # idade sexo
 
-        idade_sexo_baixo = fuzz.trimf(x_idade_sexo, [0, 10, 30])
-        idade_sexo_medio = fuzz.trimf(x_idade_sexo, [11, 40, 50])
-        idade_sexo_alto = fuzz.trimf(x_idade_sexo, [41, 60, 70])
-        idade_sexo_altissimo = fuzz.trimf(x_idade_sexo, [61, 80, 100])
-
+        x_idade_sexo['baixo'] = fuzz.trimf(x_idade_sexo.universe, [0, 0, 30])
+        x_idade_sexo['medio'] = fuzz.trimf(x_idade_sexo.universe, [0, 30, 50])
+        x_idade_sexo['Alto'] = fuzz.trimf(x_idade_sexo.universe, [30, 50, 70])
+        x_idade_sexo['Altissimo'] = fuzz.trimf(x_idade_sexo.universe, [50, 70, 99999])
         # saida
 
-        perigo_baixo_x = fuzz.trimf(x_saida, [0, 5, 10])
-        perigo_medio_x = fuzz.trimf(x_saida, [6, 20, 49])
-        perigo_alto_x = fuzz.trimf(x_saida, [21, 70, 80])
-        perigo_de_risco_x = fuzz.trimf(x_saida, [71, 90, 100])
+        x_saida['baixo'] = fuzz.trimf(x_saida, [0, 5, 10])
+        x_saida['medio'] = fuzz.trimf(x_saida, [6, 20, 49])
+        x_saida['alto'] = fuzz.trimf(x_saida, [21, 70, 80])
+        x_saida['negado'] = fuzz.trimf(x_saida, [71, 90, 100])
 
         # Definindo os leveis de cada perigo
         exercicio_level_baixo = fuzz.interp_membership(x_exercicios, exercicio_baixo, exercicio)
