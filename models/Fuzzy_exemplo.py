@@ -1,6 +1,7 @@
 import numpy as np
 import skfuzzy as fuzz
 from Classes.Cliente import Cliente
+from skfuzzy import control as ctrl
 
 
 class Calculos:
@@ -21,12 +22,15 @@ class Calculos:
         :param idade_sexo: calculo de risco de morte por sexo
         :return: o valor do risco e o cluster que ele faz parte
         '''
-        x_exercicios = np.arange(0, 300, 1)  # execicios por dia [0,7]
-        x_taxa_morte_municipio = np.arange(0, 301, 1)  # taxa de homicidios por ano [0,300]
-        x_saida = np.arange(0, 101, 1)  # saida em porcento
-        x_imc = np.arange(0, 51, 1)  # IMC
-        x_idade_sexo = np.arange(0, 101, 1)  # resultado de uma função relacionada a idade e sexo
-        x_cancer_risco = np.arange(0, 101, 1)  # risco de cancer resultado da função do cancer
+        x_cancer_risco = ctrl.Antecedent(np.arange(0, 121, 1),
+                                         'cancer')  # risco de cancer resultado da função do cancer
+        x_exercicios = ctrl.Antecedent(np.arange(0, 121, 1), 'exercicio')  # execicios por dia [0,7]
+        x_taxa_morte_municipio = ctrl.Antecedent(np.arange(0, 301, 1),
+                                                 'morte_mun')  # taxa de homicidios por ano [0,300]
+        x_saida = ctrl.Antecedent(np.arange(0, 101, 1), 'saida')  # saida em porcento
+        x_imc = ctrl.Antecedent(np.arange(0, 51, 1), 'imc')  # IMC
+        x_idade_sexo = ctrl.Antecedent(np.arange(0, 101, 1),
+                                       'id_sexo')  # resultado de uma função relacionada a idade e sexo
 
         # exercicio risco
 
