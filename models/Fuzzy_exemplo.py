@@ -80,10 +80,10 @@ class Calculos:
         x_idade_sexo['Altissimo'] = fuzz.trimf(x_idade_sexo.universe, [50, 70, 99999])
         # saida
 
-        x_saida['baixo'] = fuzz.trimf(x_saida, [0, 5, 10])
-        x_saida['medio'] = fuzz.trimf(x_saida, [6, 20, 49])
-        x_saida['alto'] = fuzz.trimf(x_saida, [21, 70, 80])
-        x_saida['negado'] = fuzz.trimf(x_saida, [71, 90, 100])
+        x_saida['baixo'] = fuzz.trimf(x_saida.universe, [0, 0, 20])
+        x_saida['medio'] = fuzz.trimf(x_saida.universe, [0, 20, 49])
+        x_saida['alto'] = fuzz.trimf(x_saida.universe, [20, 49, 80])
+        x_saida['negado'] = fuzz.trimf(x_saida.universe, [49, 80, 9999])
 
         # Definindo os leveis de cada perigo
         exercicio_level_baixo = fuzz.interp_membership(x_exercicios, exercicio_baixo, exercicio)
