@@ -120,24 +120,79 @@ class Calculos:
                             (x_idade_sexo['medio'] | x_idade_sexo['Alto']), x_saida['medio']
                             )
 
+        regraA1 = ctrl.Rule(x_exercicios['alto'] & x_imc['medio'] &
+                            (x_taxa_morte_municipio['normal'] | x_taxa_morte_municipio['alto'] |
+                             x_taxa_morte_municipio['muito alto']) & (
+                                    x_idade_sexo['medio'] | x_idade_sexo['Alto'] | x_idade_sexo['Altissimo']),
+                            x_saida['alto']
 
+                            )
 
+        regraA2 = ctrl.Rule(x_exercicios['alto'] & x_imc['OL'] &
+                            (x_taxa_morte_municipio['normal'] | x_taxa_morte_municipio['alto'] |
+                             x_taxa_morte_municipio['muito alto']) & (
+                                    x_idade_sexo['medio'] | x_idade_sexo['Alto'] | x_idade_sexo['Altissimo']),
+                            x_saida['alto'])
 
+        regraA3 = ctrl.Rule(x_exercicios['alto'] & x_imc['OM'] &
+                            (x_taxa_morte_municipio['normal'] | x_taxa_morte_municipio['alto'] |
+                             x_taxa_morte_municipio['muito alto']) & (
+                                    x_idade_sexo['medio'] | x_idade_sexo['Alto'] | x_idade_sexo['Altissimo']),
+                            x_saida['alto'])
 
+        regraA4 = ctrl.Rule(x_exercicios['medio'] & x_imc['medio'] &
+                            (x_taxa_morte_municipio['normal'] | x_taxa_morte_municipio['alto'] |
+                             x_taxa_morte_municipio['muito alto']) & (
+                                    x_idade_sexo['medio'] | x_idade_sexo['Alto'] | x_idade_sexo['Altissimo']),
+                            x_saida['alto']
 
-        risco_alto = np.fmin(perigo_alto_x, np.fmax(
-            np.fmax(np.fmin(exercicio_level_baixo, np.fmin(exercicio_level_normal, exercicio_level_alto)),
-                    np.fmin(imc_level_alto, np.fmin(imc_level_medio, imc_level_muito_alto))),
-            np.fmax(np.fmin(np.fmin(taxa_IS_medio, imc_level_muito_alto), np.fmin(taxa_IS_baixo, taxa_IS_alto)),
-                    np.fmin(np.fmin(taxa_morte_municipio_level_baixo, taxa_morte_municipio_level_normal),
-                            np.fmin(taxa_morte_municipio_level_alto, taxa_morte_municipio_level_MA)))))
+                            )
 
-        negado = np.fmin(np.fmax(np.fmin(exercicio_level_baixo, taxa_IS_MA), np.fmin(taxa_cancer_MA, imc_level_negado)),
-                         perigo_de_risco_x)
+        regraA5 = ctrl.Rule(x_exercicios['medio'] & x_imc['OL'] &
+                            (x_taxa_morte_municipio['normal'] | x_taxa_morte_municipio['alto'] |
+                             x_taxa_morte_municipio['muito alto']) & (
+                                    x_idade_sexo['medio'] | x_idade_sexo['Alto'] | x_idade_sexo['Altissimo']),
+                            x_saida['alto'])
+
+        regraA6 = ctrl.Rule(x_exercicios['medio'] & x_imc['OM'] &
+                            (x_taxa_morte_municipio['normal'] | x_taxa_morte_municipio['alto'] |
+                             x_taxa_morte_municipio['muito alto']) & (
+                                    x_idade_sexo['medio'] | x_idade_sexo['Alto'] | x_idade_sexo['Altissimo']),
+                            x_saida['alto'])
+
+        regraA7 = ctrl.Rule(x_exercicios['baixo'] & x_imc['medio'] &
+                            (x_taxa_morte_municipio['normal'] | x_taxa_morte_municipio['alto'] |
+                             x_taxa_morte_municipio['muito alto']) & (
+                                    x_idade_sexo['medio'] | x_idade_sexo['Alto'] | x_idade_sexo['Altissimo']),
+                            x_saida['alto']
+
+                            )
+
+        regraA8 = ctrl.Rule(x_exercicios['baixo'] & x_imc['OL'] &
+                            (x_taxa_morte_municipio['normal'] | x_taxa_morte_municipio['alto'] |
+                             x_taxa_morte_municipio['muito alto']) & (
+                                    x_idade_sexo['medio'] | x_idade_sexo['Alto'] | x_idade_sexo['Altissimo']),
+                            x_saida['alto'])
+
+        regraA9 = ctrl.Rule(x_exercicios['baixo'] & x_imc['OM'] &
+                            (x_taxa_morte_municipio['normal'] | x_taxa_morte_municipio['alto'] |
+                             x_taxa_morte_municipio['muito alto']) & (
+                                    x_idade_sexo['medio'] | x_idade_sexo['Alto'] | x_idade_sexo['Altissimo']),
+                            x_saida['alto'])
+
+        regraN1 = ctrl.Rule(x_exercicios['baixo'] & x_imc['OMB'] & (
+                x_taxa_morte_municipio['baixissimo'] | x_taxa_morte_municipio['baixo'] | x_taxa_morte_municipio[
+            'normal'] | x_taxa_morte_municipio['alto'] |
+                x_taxa_morte_municipio['muito alto']) & (
+                                    x_idade_sexo['medio'] | x_idade_sexo['Alto'] | x_idade_sexo['Altissimo']),
+                            x_saida['alto'])
 
         '''  perigo ou (((EA ou EM) ou EB) ou ((imcb ou imvm)ou imca)  ou                          '''
-        aggregated = np.fmax(np.fmax(risco_baixo, negado), np.fmax(risco_medio, risco_alto))
-        result = fuzz.defuzzify.dcentroid(x_saida, aggregated, 50)
+        controle_regras = ctrl.ControlSystem(
+            [regraB1, regraB2, regraA1, regraA2, regraA3, regraA4, regraA5, regraA6, regraA7, regraA8, regraA9, regraM1,
+             regraM2, regraM3, regraN1])
+        gerador_risco = ctrl.ControlSystemSimulation(controle_regras)
+
         return (self.calculo_valores(result), result)
 
     def calculo_valores(self, porcento) -> str:
