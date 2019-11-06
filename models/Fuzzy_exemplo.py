@@ -85,50 +85,6 @@ class Calculos:
         x_saida['alto'] = fuzz.trimf(x_saida.universe, [20, 49, 80])
         x_saida['negado'] = fuzz.trimf(x_saida.universe, [49, 80, 9999])
 
-        # Definindo os leveis de cada perigo
-        exercicio_level_baixo = fuzz.interp_membership(x_exercicios, exercicio_baixo, exercicio)
-        exercicio_level_normal = fuzz.interp_membership(x_exercicios, exercicio_normal, exercicio)
-        exercicio_level_alto = fuzz.interp_membership(x_exercicios, exercicio_alto, exercicio)
-
-        # fazendo a vendo qual a relação IMC e classificando
-
-        imc_level_baixo = fuzz.interp_membership(x_imc, imc_baixo, imc)
-        imc_level_medio = fuzz.interp_membership(x_imc, imc_medio, imc)
-        imc_level_alto = fuzz.interp_membership(x_imc, imc_O_leve, imc)
-        imc_level_muito_alto = fuzz.interp_membership(x_imc, imc_O_moderada, imc)
-        imc_level_negado = fuzz.interp_membership(x_imc, imc_O_Morbida, imc)
-
-        # fazendo a vendo qual a relação dos municipios e classificando
-
-        taxa_morte_municipio_level_muito_baixo_ = fuzz.interp_membership(x_taxa_morte_municipio,
-                                                                         taxa_morte_municipio_baixissimo,
-                                                                         taxa_morte_municipio)
-        taxa_morte_municipio_level_baixo = fuzz.interp_membership(x_taxa_morte_municipio,
-                                                                  taxa_morte_municipio_baixo,
-                                                                  taxa_morte_municipio)
-        taxa_morte_municipio_level_normal = fuzz.interp_membership(x_taxa_morte_municipio,
-                                                                   taxa_morte_municipio_normal,
-                                                                   taxa_morte_municipio)
-        taxa_morte_municipio_level_alto = fuzz.interp_membership(x_taxa_morte_municipio, taxa_morte_municipio_alto,
-                                                                 taxa_morte_municipio)
-        taxa_morte_municipio_level_MA = fuzz.interp_membership(x_taxa_morte_municipio,
-                                                               taxa_morte_municipio_altissimo,
-                                                               taxa_morte_municipio)
-
-        # fazendo a vendo qual a relação idade_sexo e classificando
-
-        taxa_IS_baixo = fuzz.interp_membership(x_idade_sexo, idade_sexo_baixo, idade_sexo)
-        taxa_IS_medio = fuzz.interp_membership(x_idade_sexo, idade_sexo_medio, idade_sexo)
-        taxa_IS_alto = fuzz.interp_membership(x_idade_sexo, idade_sexo_alto, idade_sexo)
-        taxa_IS_MA = fuzz.interp_membership(x_idade_sexo, idade_sexo_altissimo, idade_sexo)
-
-        # fazendo a vendo qual a relação cancer e classificando
-
-        taxa_cancer_baixo = fuzz.interp_membership(x_cancer_risco, cancer_baixo, cancer_risco)
-        taxa_cancer_medio = fuzz.interp_membership(x_cancer_risco, cancer_medio, cancer_risco)
-        taxa_cancer_alto = fuzz.interp_membership(x_cancer_risco, cancer_alto, cancer_risco)
-        taxa_cancer_MA = fuzz.interp_membership(x_cancer_risco, cancer_altissimo, cancer_risco)
-
         ''' 
         aqui será implementada as funções fuzzy para que tenhamos uma logica de 
         1- Risco altissimo
@@ -137,18 +93,37 @@ class Calculos:
         4- Risco baixo
         
         '''
-        risco_baixo = np.fmax(perigo_baixo_x, np.fmax(exercicio_level_alto,
-                                                      np.fmax(np.fmin(imc_level_baixo, imc_level_medio), np.fmax(
-                                                          np.fmin(taxa_morte_municipio_level_muito_baixo_,
-                                                                  taxa_morte_municipio_level_baixo),
-                                                          np.fmin(taxa_IS_baixo, taxa_IS_medio))))
-                              )
 
-        risco_medio = np.fmin(perigo_medio_x, np.fmax(
-            np.fmax(np.fmin(exercicio_level_baixo, np.fmin(exercicio_level_normal, exercicio_level_alto)),
-                    np.fmin(imc_level_medio, imc_level_baixo)),
-            np.fmax(np.fmin(taxa_IS_baixo, np.fmin(taxa_IS_medio, taxa_IS_alto)),
-                    taxa_cancer_baixo)))
+        regraB1 = ctrl.Rule(x_exercicios['alto'] & x_imc['baixo'] & (
+                (x_taxa_morte_municipio['baixissimo'] | x_taxa_morte_municipio['baixo']) & (
+                x_idade_sexo['baixo'] | x_idade_sexo['medio'])), x_saida['baixo'])
+        regraB2 = ctrl.Rule(x_exercicios['alto'] & x_imc['medio'] & (
+                (x_taxa_morte_municipio['baixissimo'] | x_taxa_morte_municipio['baixo']) & (
+                x_idade_sexo['baixo'] | x_idade_sexo['medio'])), x_saida['baixo'])
+
+        regraM1 = ctrl.Rule(x_exercicios['alto'] & x_imc['baixo'] &
+                            (x_taxa_morte_municipio['baixo'] | x_taxa_morte_municipio['normal'] |
+                             x_taxa_morte_municipio['alto']) &
+                            (x_idade_sexo['medio'] | x_idade_sexo['Alto']), x_saida['medio']
+                            )
+
+        regraM2 = ctrl.Rule(x_exercicios['alto'] & x_imc['medio'] &
+                            (x_taxa_morte_municipio['baixo'] | x_taxa_morte_municipio['normal'] |
+                             x_taxa_morte_municipio['alto']) &
+                            (x_idade_sexo['medio'] | x_idade_sexo['Alto']), x_saida['medio']
+
+                            )
+
+        regraM3 = ctrl.Rule(x_exercicios['alto'] & x_imc['OL'] &
+                            (x_taxa_morte_municipio['baixo'] | x_taxa_morte_municipio['normal'] |
+                             x_taxa_morte_municipio['alto']) &
+                            (x_idade_sexo['medio'] | x_idade_sexo['Alto']), x_saida['medio']
+                            )
+
+
+
+
+
 
         risco_alto = np.fmin(perigo_alto_x, np.fmax(
             np.fmax(np.fmin(exercicio_level_baixo, np.fmin(exercicio_level_normal, exercicio_level_alto)),
