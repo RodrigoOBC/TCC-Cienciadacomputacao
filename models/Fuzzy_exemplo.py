@@ -141,11 +141,13 @@ class Calculos:
                                                           np.fmin(taxa_IS_baixo, taxa_IS_medio))))
                               )
 
-        risco_medio = np.fmin(perigo_medio_x, np.fmax(
+        risco_medio = np.fmin(perigo_medio_x, np.fmax(np.fmax(
             np.fmax(np.fmin(exercicio_level_baixo, np.fmin(exercicio_level_normal, exercicio_level_alto)),
                     np.fmin(imc_level_medio, imc_level_baixo)),
             np.fmax(np.fmin(taxa_IS_baixo, np.fmin(taxa_IS_medio, taxa_IS_alto)),
-                    taxa_cancer_baixo)))
+                    taxa_cancer_baixo)),
+                              np.fmin(np.fmin(taxa_morte_municipio_level_normal, taxa_morte_municipio_level_baixo),
+                                      taxa_morte_municipio_level_alto)))
 
         risco_alto = np.fmin(perigo_alto_x, np.fmax(
             np.fmax(np.fmin(exercicio_level_baixo, np.fmin(exercicio_level_normal, exercicio_level_alto)),
@@ -169,9 +171,9 @@ class Calculos:
         :param porcento: Valor da porcentagem de risco atribuida ao cliente
         :return: O grupo de risco pertencente.
         '''
-        if porcento <= 10:
+        if porcento <= 29.9:
             return 'A'
-        elif 10 < porcento <= 50:
+        elif 29.9 < porcento <= 50.9:
             return 'B'
         elif 51 <= porcento < 80:
             return 'C'

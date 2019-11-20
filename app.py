@@ -194,18 +194,62 @@ def cadastrar_funcionario():
 
 @app1.route('/buscar_cliente/CPF=<CPF>', methods=['GET', "POST"])
 def B_CLIENTE(CPF):
-    if 'user' in session:
-        data = json_transformar().passar_cliente_json(CPF)
+    data = json_transformar().passar_cliente_json(CPF)
+    response = app1.response_class(
+        response=json.dumps(data),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
+
+@app1.route('/calcular', methods=['GET', "POST"])
+def calcular():
+    try:
+        if request.method == 'POST':
+            valor = request.get_json()
+            cpf = valor['cpf']
+            nome = valor['nome']
+            cep = valor['cep']
+            idade = valor['idade']
+            idade2 = valor['idade2']
+            sexo = valor['sexo']
+            altura = valor['altura']
+            peso = valor['peso']
+            salario = valor['salario']
+            ex = valor['ex']
+            mun = valor['mun']
+            id_sex = valor['idsx']
+            valor , risco = Calculos('nada','nada').calculos(exercicio=ex,
+                                                taxa_morte_municipio=mun,
+                                                cancer_risco=0,
+                                                idade=idade2, imc=(peso/(altura*altura)),
+                                                sexo=sexo,
+                                                idade_sexo=id_sex)
+            api.tree = Arvore(IMC=(peso/(altura*altura)), MORTE=mun, ID=id_sex, EX=ex,
+                              RESULT=risco)
+            api.predicao = api.tree.treinar_arvore()
+            seg = api.tree.segmentar_valores()
+            if buscar_dados().inserir_cliente(
+                    [cpf, nome, cep, idade, sexo, altura, peso, salario, False, ex, 0, seg]):
+                response = app1.response_class(
+                    response=json.dumps({"arvore": seg, "fuzzy": valor, "cpf":cpf}),
+                    status=201,
+                    mimetype='application/json'
+                )
+                return response
+            else:
+                response = app1.response_class(
+                    response=json.dumps({"erro": "Não incluiu", "login": False}),
+                    status=401,
+                    mimetype='application/json'
+                )
+                return response
+    except:
+
         response = app1.response_class(
-            response=json.dumps(data),
-            status=200,
-            mimetype='application/json'
-        )
-        return response
-    else:
-        response = app1.response_class(
-            response=json.dumps({"erro": "not user", "login": False}),
-            status=404,
+            response=json.dumps({"erro": "Quebrou", "login": False}),
+            status=500,
             mimetype='application/json'
         )
         return response
